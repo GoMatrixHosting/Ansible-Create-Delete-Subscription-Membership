@@ -1,0 +1,214 @@
+
+
+#- name: Load vars from organisation.yml
+#  include_vars:
+#    file: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+
+# ^ Might be redundant
+
+- name: Install tower dep
+  delegate_to: 127.0.0.1
+  pip:
+      name: ansible-tower-cli
+
+- name: Create AWX organisation
+  delegate_to: 127.0.0.1
+  tower_organization:
+    name: "{{ client_email }}"
+    description: "{{ client_email }} Organisation"
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+  register: awxorg
+
+# client_first_name, client_last_name, client_email, subscription_id, plan_title 
+
+- name: Add AWX user
+  delegate_to: 127.0.0.1
+  tower_user:
+    username: "{{ client_email }}"
+    password: "{{ client_password }}"
+    email: "{{ client_email }}"
+    first_name: "{{ client_first_name }}"
+    last_name: "{{ client_last_name }}"
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+  register: awxuser
+
+- name: Add AWX user to organisation
+  delegate_to: 127.0.0.1
+  tower_role:
+    user: "{{ client_email }}"
+    organization: "{{ client_email }}"
+    role: member
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Add tower inventory
+  delegate_to: 127.0.0.1
+  tower_inventory:
+    name: "{{ client_email }} Inventory"
+    description: "{{ client_email }} inventory"
+    organization: "{{ client_email }}"
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Allow user account to administrate/use this inventory
+  delegate_to: 127.0.0.1
+  tower_role:
+    user: "{{ client_email }}"
+    inventory: "{{ client_email }} Inventory"
+    role: use
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Add tower host to newly created inventory
+  delegate_to: 127.0.0.1
+  tower_host:
+    name: "{{ matrix_domain }}"
+    description: "{{ matrix_domain }} Server"
+    inventory: "{{ client_email }} Inventory"
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Add 'testing SSH' credential to users organisation
+  delegate_to: 127.0.0.1
+  tower_credential:
+    name: "{{ client_email }} - ChatOasis testing SSH"
+    description: "A testing key for provision/deploy"
+    organization: "{{ client_email }}"
+    kind: ssh
+    ssh_key_data: "{{ lookup('file', '/var/lib/awx/projects/hosting/matrixtesting_ed25519') }}"
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+# ^ SSH key loaded into the towers volume manually for now.
+
+- name: Add 'Ansible Provision Server' project to users organisation
+  delegate_to: 127.0.0.1
+  tower_project:
+    name: "{{ client_email }} - Ansible Provision Server"
+    description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
+    organization: "{{ client_email }}"
+    scm_type: git
+    scm_url: "https://gitlab.com/ChatOasis/ansible-provision-server.git"
+    scm_delete_on_update: yes
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Add 'Spantaleev's Deploy' project to users organisation
+  delegate_to: 127.0.0.1
+  tower_project:
+    name: "{{ client_email }} - Matrix Docker Ansible Deploy"
+    description: "Creating and updating a Matrix service on an already provisioned server."
+    organization: "{{ client_email }}"
+    scm_type: git
+    scm_url: "https://gitlab.com/ChatOasis/chatoasis-matrix-docker-ansible-deploy.git"
+    scm_delete_on_update: yes
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Add 'AWX Playbooks' project to users organisation
+  delegate_to: 127.0.0.1
+  tower_project:
+    name: "{{ client_email }} - AWX Playbooks"
+    description: "AWX playbooks for management of an already deployed server."
+    organization: "{{ client_email }}"
+    scm_type: git
+    scm_url: "https://gitlab.com/ChatOasis/chatoasis-awx-playbooks.git"
+    scm_delete_on_update: yes
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Update 'Ansible Provision Server' project
+  delegate_to: 127.0.0.1
+  awx.awx.tower_project_update:
+    project: "{{ client_email }} - Ansible Provision Server"
+    timeout: 300
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Update 'Spantaleev's Deploy' project
+  delegate_to: 127.0.0.1
+  awx.awx.tower_project_update:
+    project: "{{ client_email }} - Matrix Docker Ansible Deploy"
+    timeout: 300
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Update 'AWX Playbooks' project
+  delegate_to: 127.0.0.1
+  awx.awx.tower_project_update:
+    project: "{{ client_email }} - AWX Playbooks"
+    timeout: 300
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+# ^ These are only available in AWX >=15.0.0
+
+- name: Create 'Provision a New Server' job template
+  delegate_to: 127.0.0.1
+  tower_job_template:
+    name: "{{ subscription_id }} - 00 - Provision a New Server"
+    description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/extra_vars.yml'
+    job_type: run
+    inventory: "{{ client_email }} Inventory"
+    project: "{{ client_email }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    credential: "{{ client_email }} - ChatOasis testing SSH"
+#    become_enabled: yes
+    state: present
+    verbosity: 1
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+# ^ 'project' hasn't completed initial update by the time this runs.
+
+- name: Allow user account to use 'Provision a New Server job template
+  delegate_to: 127.0.0.1
+  tower_role:
+    user: "{{ client_email }}"
+    job_template: "{{ subscription_id }} - 00 - Provision a New Server"
+    role: execute
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+

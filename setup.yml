@@ -1,0 +1,24 @@
+
+#
+# IPO Summary:
+#
+# INPUT: client_first_name, client_last_name, client_email, subscription_id, plan_title 
+# PROCESSING: Creates AWX Account for user, creates initial organisation.yml and do_droplet.yml file. Also creates initial '{{ subscr_id }} Provision Server' playbook in users account.
+# OUTPUT:
+#
+# Relies on the following file on the AWX host: /var/lib/awx/hosting/hosting_vars.yml
+# do_api_token: value
+# do_spaces_access_key: value
+# do_spaces_secret_key: value
+# do_image_master: debian-10-x64
+# tower_host: value
+# tower_username: value
+# tower_password: value
+
+- name: "Spawn/recreate an Organisation and add Provision script to it."
+  hosts: "dummyvalue.com"
+#  become: true
+  gather_facts: false
+
+  roles:
+    - create-awx-account
