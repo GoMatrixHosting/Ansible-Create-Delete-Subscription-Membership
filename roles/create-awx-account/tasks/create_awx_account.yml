@@ -66,6 +66,18 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
+- name: Add dummyvalue.com host to organisations inventory
+  delegate_to: 127.0.0.1
+  tower_host:
+    name: "dummyvalue.com"
+    description: "A placeholder host, because ansible needs a host to work on. :)"
+    inventory: "{{ client_email }} Inventory"
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
 - name: Add 'testing SSH' credential to users organisation
   delegate_to: 127.0.0.1
   tower_credential:
