@@ -181,7 +181,7 @@
     extra_vars_path: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/extra_vars.yml'
     job_type: run
     inventory: "{{ client_email }} Inventory"
-    project: "{{ client_email }} - Matrix Docker Ansible Deploy"
+    project: "{{ client_email }} - Ansible Provision Server"
     playbook: setup.yml
     credential: "{{ client_email }} - ChatOasis testing SSH"
     survey_enabled: true
