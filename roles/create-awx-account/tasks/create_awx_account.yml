@@ -2,6 +2,10 @@
 # Script inputs:
 # client_first_name, client_last_name, client_email, subscription_id, plan_title 
 
+- name: Include organisation vars of organisation.yml
+  include_vars:
+    file: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+
 - name: Install tower dep
   delegate_to: 127.0.0.1
   pip:
