@@ -114,7 +114,7 @@
 
 #Create extra_vars.yml variables file.
 
-- name: Add do_image line to do_droplet.yml file locally on AWX
+- name: Add subscription_id line to extra_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/extra_vars.yml'
@@ -122,4 +122,12 @@
     mode: '0600'
     state: present
     create: yes
+
+- name: Add client_email line to extra_vars.yml file locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/extra_vars.yml'
+    line: 'client_email: {{ client_email }}'
+    mode: '0600'
+    state: present
 
