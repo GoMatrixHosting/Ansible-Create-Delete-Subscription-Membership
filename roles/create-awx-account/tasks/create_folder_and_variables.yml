@@ -66,15 +66,6 @@
 
 # Create organisation.yml file, generate password if needed.
 
-- name: Add client_email line to organisation.yml file locally on AWX
-  delegate_to: 127.0.0.1
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
-    line: 'client_email: "{{ client_email }}"'
-    mode: '0600'
-    state: present
-    create: yes
-
 - name: Check if organisation.yml file already exists on AWX
   delegate_to: 127.0.0.1
   stat: 
@@ -97,7 +88,7 @@
     state: latest
   when: generate_password == true
 
-- name: Run a command to list all DigitalOcean 'spaces'
+- name: Generate the users password
   delegate_to: 127.0.0.1
   command: 'pwgen -s 16 1'
   register: client_password
@@ -110,7 +101,16 @@
     line: 'client_password: "{{ client_password.stdout }}"'
     mode: '0600'
     state: present
+    create: yes
   when: generate_password == true
+
+- name: Add client_email line to organisation.yml file locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+    line: 'client_email: "{{ client_email }}"'
+    mode: '0600'
+    state: present
 
 #Create extra_vars.yml variables file.
 

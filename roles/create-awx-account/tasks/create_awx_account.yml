@@ -1,10 +1,6 @@
 
-
-#- name: Load vars from organisation.yml
-#  include_vars:
-#    file: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
-
-# ^ Might be redundant
+# Script inputs:
+# client_first_name, client_last_name, client_email, subscription_id, plan_title 
 
 - name: Install tower dep
   delegate_to: 127.0.0.1
@@ -22,8 +18,6 @@
     validate_certs: yes
   register: awxorg
 
-# client_first_name, client_last_name, client_email, subscription_id, plan_title 
-
 - name: Add AWX user
   delegate_to: 127.0.0.1
   tower_user:
@@ -36,7 +30,6 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  register: awxuser
 
 - name: Add AWX user to organisation
   delegate_to: 127.0.0.1
@@ -72,20 +65,6 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-
-#- name: Add tower host to newly created inventory
-#  delegate_to: 127.0.0.1
-#  tower_host:
-#    name: "{{ matrix_domain }}"
-#    description: "{{ matrix_domain }} Server"
-#    inventory: "{{ client_email }} Inventory"
-#    state: present
-#    tower_host: "{{ tower_host }}"
-#    tower_username: "{{ tower_username }}"
-#    tower_password: "{{ tower_password }}"
-#    validate_certs: yes
-
-# ^ Moved to provision stage
 
 - name: Add 'testing SSH' credential to users organisation
   delegate_to: 127.0.0.1
@@ -178,16 +157,6 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-# ^ These are only available in AWX >=15.0.0
-
-#- name: Save initial provision_survey.json to the AWX tower
-#  delegate_to: 127.0.0.1
-#  copy:
-#    src: ./inventory/surveys/provision_survey.json
-#    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/provision_survey.json'
-#    mode: 0644
-#    force: no
-
 - name: Create 'Provision a New Server' job template
   delegate_to: 127.0.0.1
   tower_job_template:
@@ -208,8 +177,6 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-
-# ^ 'project' hasn't completed initial update by the time this runs.
 
 - name: Allow user account to use 'Provision a New Server job template
   delegate_to: 127.0.0.1
