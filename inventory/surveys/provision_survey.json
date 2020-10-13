@@ -1,0 +1,42 @@
+{
+  "name": "",
+  "description": "",
+  "spec": [
+    {
+      "question_name": "Select Region",
+      "question_description": "Which region would you like your Matrix server to be in? Think carefully as this decision can only be made once.",
+      "required": true,
+      "min": null,
+      "max": null,
+      "default": "New York City (USA)",
+      "choices": "New York City (USA)\nSan Francisco (USA)\nAmsterdam (NLD)\nFrankfurt (DEU)\nSingapore (SGP)",
+      "new_question": true,
+      "variable": "do_droplet_region_long",
+      "type": "multiplechoice"
+    },
+    {
+      "question_name": "Set Base Domain.",
+      "question_description": "The base domain of your website (Eg: example.org), this must be a domain name you own and can't be a subdomain. Think carefully as this decision can only be made once.",
+      "required": true,
+      "min": 0,
+      "max": 2048,
+      "default": "example.org",
+      "choices": "",
+      "new_question": true,
+      "variable": "matrix_domain",
+      "type": "text"
+    },
+    {
+      "question_name": "Base Domain Used",
+      "question_description": "Do web services already exist at this domain? If so select 'true' you'll need to configure a .well-known entry at this domain before deploying. Contact support if you need assistance doing this.",
+      "required": true,
+      "min": null,
+      "max": null,
+      "default": "false",
+      "choices": "true\nfalse",
+      "new_question": true,
+      "variable": "base_domain_used",
+      "type": "multiplechoice"
+    }
+  ]
+}
