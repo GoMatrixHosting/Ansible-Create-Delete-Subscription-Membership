@@ -3,7 +3,7 @@
 - name: Create a directory if it does not exist locally on AWX
   delegate_to: 127.0.0.1
   file:
-    path: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/'
     state: directory
     mode: '0700'
 
@@ -42,7 +42,7 @@
 - name: Add do_image line to do_droplet.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/do_droplet.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
     line: 'do_image: {{ do_image_master }}'
     mode: '0600'
     state: present
@@ -51,7 +51,7 @@
 - name: Add slug_size line to do_droplet.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/do_droplet.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
     line: 'slug_size: {{ slug_size }}'
     mode: '0600'
     state: present
@@ -59,7 +59,7 @@
 - name: Add swap_size line to do_droplet.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/do_droplet.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
     line: 'swap_size: {{ swap_size }}'
     mode: '0600'
     state: present
@@ -69,7 +69,7 @@
 - name: Check if organisation.yml file already exists on AWX
   delegate_to: 127.0.0.1
   stat: 
-    path: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
   register: orgfile
 
 - name: Set base value for generate_password
@@ -97,7 +97,7 @@
 - name: Add client_password line to organisation.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'client_password: "{{ client_password.stdout }}"'
     mode: '0600'
     state: present
@@ -107,7 +107,7 @@
 - name: Add client_email line to organisation.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/organisation.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'client_email: "{{ client_email }}"'
     mode: '0600'
     state: present
@@ -117,16 +117,24 @@
 - name: Add subscription_id line to extra_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/extra_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     line: 'subscription_id: {{ subscription_id }}'
     mode: '0600'
     state: present
     create: yes
 
+- name: Add member_id line to extra_vars.yml file locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    line: 'member_id: {{ member_id }}'
+    mode: '0600'
+    state: present
+
 - name: Add client_email line to extra_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ client_email }}/{{ subscription_id }}/extra_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     line: 'client_email: {{ client_email }}'
     mode: '0600'
     state: present

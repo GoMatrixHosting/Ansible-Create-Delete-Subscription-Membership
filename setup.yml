@@ -2,7 +2,7 @@
 #
 # IPO Summary:
 #
-# INPUT: client_first_name, client_last_name, client_email, subscription_id, plan_title 
+# INPUT: client_first_name, client_last_name, client_email, member_id, subscription_id, plan_title 
 # PROCESSING: Creates AWX Account for user, creates initial organisation.yml and do_droplet.yml file. Also creates initial '{{ subscr_id }} Provision Server' playbook in users account.
 # OUTPUT:
 #
