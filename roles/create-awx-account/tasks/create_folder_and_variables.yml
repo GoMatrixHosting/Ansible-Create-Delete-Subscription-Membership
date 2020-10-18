@@ -72,10 +72,6 @@
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
   register: orgfile
 
-- name: Set base value for generate_password
-  set_fact:
-    generate_password: false
-
 - name: Set generate_password to true if organisation.yml doesn't exist
   set_fact:
     generate_password: true
@@ -86,23 +82,28 @@
   yum:
     name: pwgen
     state: latest
-  when: generate_password == true
+  when: orgfile.stat.exists == false
 
 - name: Generate the users password
   delegate_to: 127.0.0.1
   command: 'pwgen -s 16 1'
-  register: client_password
-  when: generate_password == true
+  register: register_client_password
+  when: orgfile.stat.exists == false
 
 - name: Add client_password line to organisation.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
-    line: 'client_password: "{{ client_password.stdout }}"'
+    line: 'client_password: "{{ register_client_password.stdout }}"'
     mode: '0600'
     state: present
     create: yes
-  when: generate_password == true
+  when: orgfile.stat.exists == false
+
+- name: Set client_password within playbook for account creation
+  set_fact:
+    client_password: "{{ register_client_password.stdout }}"
+  when: orgfile.stat.exists == false
 
 - name: Add client_email line to organisation.yml file locally on AWX
   delegate_to: 127.0.0.1
