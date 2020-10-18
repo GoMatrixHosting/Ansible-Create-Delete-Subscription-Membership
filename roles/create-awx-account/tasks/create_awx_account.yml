@@ -51,7 +51,7 @@
   tower_inventory:
     name: "{{ member_id }} Inventory"
     description: "{{ client_email }} inventory"
-    organization: "{{ client_email }}"
+    organization: "{{ member_id }}"
     state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
