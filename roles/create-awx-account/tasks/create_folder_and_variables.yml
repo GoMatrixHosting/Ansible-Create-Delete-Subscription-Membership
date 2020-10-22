@@ -148,11 +148,4 @@
     mode: '0600'
     state: present
 
-- name: Add client_email line to extra_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    line: 'do_droplet_region_long: {{ do_droplet_region_long }}'
-    mode: '0600'
-    state: present
 
