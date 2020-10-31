@@ -49,6 +49,6 @@
       "new_question": true,
       "variable": "element_subdomain",
       "type": "text"
-    },
+    }
   ]
 }
