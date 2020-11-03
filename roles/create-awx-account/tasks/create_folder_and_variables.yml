@@ -64,22 +64,6 @@
     mode: '0600'
     state: present
 
-- name: Add base_domain_used line to do_droplet.yml file locally on AWX
-  delegate_to: 127.0.0.1
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
-    line: 'base_domain_used: {{ base_domain_used }}'
-    mode: '0600'
-    state: present
-
-- name: Add element_subdomain line to do_droplet.yml file locally on AWX
-  delegate_to: 127.0.0.1
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
-    line: 'element_subdomain: {{ element_subdomain }}'
-    mode: '0600'
-    state: present
-
 # Create organisation.yml file, generate password if needed.
 
 - name: Check if organisation.yml file already exists on AWX
