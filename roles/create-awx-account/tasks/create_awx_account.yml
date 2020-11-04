@@ -189,6 +189,8 @@
 #    become_enabled: yes
     state: present
     verbosity: 1
+    tags: imposter-check
+    skip_tags: digitalocean-space
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
