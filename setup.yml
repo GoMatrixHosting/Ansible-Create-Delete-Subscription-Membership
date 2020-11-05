@@ -2,9 +2,17 @@
 #
 # IPO Summary:
 #
-# INPUT: client_first_name, client_last_name, client_email, member_id, subscription_id, plan_title 
-# PROCESSING: Creates AWX Account for user, creates initial organisation.yml and do_droplet.yml file. Also creates initial '{{ subscr_id }} Provision Server' playbook in users account.
-# OUTPUT:
+# INPUT: 
+# client_first_name
+# client_last_name
+# client_email
+# member_id - login username, a string or memberpress account number [rename to 'username']
+# subscription_id - memberpress subscription number (mp-sub-5fa2a2ac5fa12 or 'byo')
+# plan_title - size of server
+#
+# PROCESSING: Creates AWX Account for user, append random string to 'byo', creates initial organisation.yml and server_vars.yml file. Also creates initial '{{ subscription_id }} Provision Server' playbook in users account.
+#
+# OUTPUT: Working AWX account at provision stage.
 #
 # Relies on the following file on the AWX host: /var/lib/awx/hosting/hosting_vars.yml
 # do_api_token: value

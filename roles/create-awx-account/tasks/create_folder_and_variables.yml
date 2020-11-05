@@ -1,4 +1,23 @@
 
+- name: Configure byo_bool 2
+  set_fact:
+    byo_bool: false
+
+- name: Configure byo_bool 2
+  set_fact:
+    byo_bool: true
+  when: subscription_id == 'byo'
+
+- name: Generate string to append to byo
+  command: openssl rand -hex 7
+  register: subscription_hex
+  when: subscription_id == 'byo'
+
+- name: Append string to byo
+  delegate_to: 127.0.0.1
+  command: echo "{{ subscription_id }}-{{ subscription_hex }}"
+  register: subscription_id
+  when: subscription_id == 'byo'
 
 - name: Create a directory if it does not exist locally on AWX
   delegate_to: 127.0.0.1
@@ -7,7 +26,7 @@
     state: directory
     mode: '0700'
 
-# Create do_droplet.yml file locally on AWX.
+# Create server_vars.yml file locally on AWX.
 
 - name: Set slug_size for plan
   set_fact:
@@ -39,27 +58,27 @@
     swap_size: "32G"
   when: plan_title=="Jumbo Server"
 
-- name: Add do_image line to do_droplet.yml file locally on AWX
+- name: Add do_image line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'do_image: {{ do_image_master }}'
     mode: '0600'
     state: present
     create: yes
 
-- name: Add slug_size line to do_droplet.yml file locally on AWX
+- name: Add slug_size line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'slug_size: {{ slug_size }}'
     mode: '0600'
     state: present
 
-- name: Add swap_size line to do_droplet.yml file locally on AWX
+- name: Add swap_size line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/do_droplet.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'swap_size: {{ swap_size }}'
     mode: '0600'
     state: present
