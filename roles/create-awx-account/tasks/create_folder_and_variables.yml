@@ -6,7 +6,7 @@
 - name: Configure byo_bool 2 (when 'byo' in subscription_id do)
   set_fact:
     byo_bool: true
-  when: subscription_id == 'byo'
+  when: subscription_id == byo
 
 - debug:
     msg: "byo_bool: {{ byo_bool }}"
