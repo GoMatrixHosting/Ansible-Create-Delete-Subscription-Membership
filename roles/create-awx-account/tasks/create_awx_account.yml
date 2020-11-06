@@ -176,9 +176,9 @@
 - name: Create 'Provision a New Server' job template
   delegate_to: 127.0.0.1
   tower_job_template:
-    name: "{{ subscription_id }} - 00 - Provision a New Server"
+    name: "{{ subscription_id_final }} - 00 - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
     job_type: run
     inventory: "{{ member_id }} Inventory"
     project: "{{ member_id }} - Ansible Provision Server"
@@ -193,14 +193,14 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  when: byo_bool|bool == true
+  when: byo_bool|bool == false
 
 - name: Create 'Provision a New Server' job template
   delegate_to: 127.0.0.1
   tower_job_template:
-    name: "{{ subscription_id }} - 00 - Provision a New Server"
+    name: "{{ subscription_id_final }} - 00 - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
     job_type: run
     inventory: "{{ member_id }} Inventory"
     project: "{{ member_id }} - Ansible Provision Server"
@@ -210,7 +210,7 @@
     survey_spec: "{{ lookup('file', './inventory/surveys/provision_survey_byo.json') }}"
     state: present
     verbosity: 1
-    tags: byo-server
+    job_tags: byo-server
     skip_tags: digitalocean-space, digitalocean-droplet
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
@@ -222,7 +222,7 @@
   delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
-    job_template: "{{ subscription_id }} - 00 - Provision a New Server"
+    job_template: "{{ subscription_id_final }} - 00 - Provision a New Server"
     role: execute
     state: present
     tower_host: "{{ tower_host }}"

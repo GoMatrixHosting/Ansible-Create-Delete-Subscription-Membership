@@ -3,7 +3,7 @@
   set_fact:
     byo_bool: false
 
-- name: Configure byo_bool 2 (when 'byo' in subscription_id do)
+- name: Configure byo_bool 2 (when 'byo' in subscription_id make byo_bool true)
   set_fact:
     byo_bool: true
   when: subscription_id == 'byo'
@@ -23,19 +23,25 @@
   register: byo_string
   when: byo_bool|bool == true
 
-- name: Assign new subscription_id value to byo_string
+- name: Assign new subscription_id_final with byo_string 
   delegate_to: 127.0.0.1
   set_fact:
-    subscription_id: "{{ byo_string.stdout }}"
+    subscription_id_final: "{{ byo_string.stdout }}"
   when: byo_bool|bool == true
 
+- name: Assign new subscription_id_final with byo_string
+  delegate_to: 127.0.0.1
+  set_fact:
+    subscription_id_final: "{{ subscription_id }}"
+  when: byo_bool|bool == false
+
 - debug:
-    msg: "subscription_id: {{ subscription_id }}"
+    msg: "subscription_id: {{ subscription_id_final }}"
 
 - name: Create a directory if it does not exist locally on AWX
   delegate_to: 127.0.0.1
   file:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/'
     state: directory
     mode: '0700'
 
@@ -74,7 +80,7 @@
 - name: Add do_image line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     line: 'do_image: {{ do_image_master }}'
     mode: '0600'
     state: present
@@ -83,7 +89,7 @@
 - name: Add slug_size line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     line: 'slug_size: {{ slug_size }}'
     mode: '0600'
     state: present
@@ -91,7 +97,7 @@
 - name: Add swap_size line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     line: 'swap_size: {{ swap_size }}'
     mode: '0600'
     state: present
@@ -158,8 +164,8 @@
 - name: Add subscription_id line to extra_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    line: 'subscription_id: {{ subscription_id }}'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
+    line: 'subscription_id: {{ subscription_id_final }}'
     mode: '0600'
     state: present
     create: yes
@@ -167,7 +173,7 @@
 - name: Add member_id line to extra_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
     line: 'member_id: {{ member_id }}'
     mode: '0600'
     state: present
@@ -175,7 +181,7 @@
 - name: Add client_email line to extra_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
     line: 'client_email: {{ client_email }}'
     mode: '0600'
     state: present
