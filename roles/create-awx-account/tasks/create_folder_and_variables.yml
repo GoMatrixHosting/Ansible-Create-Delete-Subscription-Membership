@@ -6,7 +6,7 @@
 - name: Configure byo_bool 2 (when 'byo' in subscription_id do)
   set_fact:
     byo_bool: true
-  when: "byo" in subscription_id
+  when: subscription_id == 'byo'
 
 - debug:
     msg: "byo_bool: {{ byo_bool }}"
@@ -15,13 +15,13 @@
   delegate_to: 127.0.0.1
   command: openssl rand -hex 7
   register: subscription_hex
-  when: "byo" in subscription_id
+  when: subscription_id == 'byo'
 
 - name: Append string to byo
   delegate_to: 127.0.0.1
   command: echo "{{ subscription_id }}-{{ subscription_hex }}"
   register: subscription_id
-  when: "byo" in subscription_id
+  when: subscription_id == 'byo'
 
 - debug:
     msg: "subscription_id: {{ subscription_id }}"
