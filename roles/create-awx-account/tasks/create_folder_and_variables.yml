@@ -12,7 +12,7 @@
   delegate_to: 127.0.0.1
   command: openssl rand -hex 7
   register: subscription_hex
-  when: 'byo' in subscript
+  when: 'byo' in subscription_id
 
 - name: Append string to byo
   delegate_to: 127.0.0.1
