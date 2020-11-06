@@ -11,16 +11,22 @@
 - debug:
     msg: "byo_bool: {{ byo_bool }}"
 
-- name: Generate string to append to byo
+- name: Generate hex_string to append to 'byo' and collect output
   delegate_to: 127.0.0.1
   command: openssl rand -hex 7
-  register: subscription_hex
+  register: hex_string
   when: subscription_id == 'byo'
 
-- name: Append string to byo
+- name: Append hex_string to 'byo' and collect output
   delegate_to: 127.0.0.1
-  command: echo "{{ subscription_id }}-{{ subscription_hex }}"
-  register: subscription_id
+  command: echo "{{ subscription_id }}-{{ hex_string.stdout }}"
+  register: byo_string
+  when: subscription_id == 'byo'
+
+- name: Assign new subscription_id value to byo_string
+  delegate_to: 127.0.0.1
+  set_fact:
+    subscription_id: "{{ byo_string.stdout }}"
   when: subscription_id == 'byo'
 
 - debug:
