@@ -3,19 +3,7 @@
   "description": "",
   "spec": [
     {
-      "question_name": "Root Password.",
-      "question_description": "The BYO servers root password, only needed if public SSH key isn't loaded into it.",
-      "required": false,
-      "min": 0,
-      "max": 256,
-      "default": "",
-      "choices": "",
-      "new_question": true,
-      "variable": "root_password",
-      "type": "password"
-    },
-    {
-      "question_name": "Set Base Domain.",
+      "question_name": "Set Base Domain",
       "question_description": "The base domain of your website (Eg: example.org), this must be a domain name you own and can't be a subdomain. WARNING: Think carefully as this decision can only be made once.",
       "required": true,
       "min": 0,
@@ -39,7 +27,7 @@
       "type": "multiplechoice"
     },
     {
-      "question_name": "Set Element Subdomain.",
+      "question_name": "Set Element Subdomain",
       "question_description": "Sets the subdomain of the Element web-client, you should only specify the subdomain, not the base domain you've already specified above. (Eg: 'element' for element.example.org)",
       "required": true,
       "min": 0,
@@ -49,6 +37,42 @@
       "new_question": true,
       "variable": "element_subdomain",
       "type": "text"
+    },
+    {
+      "question_name": "Root Password (Optional)",
+      "question_description": "The BYO servers root password, only needed if public SSH key isn't loaded into it.",
+      "required": false,
+      "min": 0,
+      "max": 256,
+      "default": "",
+      "choices": "",
+      "new_question": true,
+      "variable": "root_password",
+      "type": "password"
+    },
+    {
+      "question_name": "Server IPv4",
+      "question_description": "The IPv4 address of the existing server.",
+      "required": true,
+      "min": 0,
+      "max": 256,
+      "default": "",
+      "choices": "",
+      "new_question": true,
+      "variable": "server_ipv4",
+      "type": "password"
+    },
+    {
+      "question_name": "Server IPv6 (Optional)",
+      "question_description": "The IPv6 address of the existing server.",
+      "required": false,
+      "min": 0,
+      "max": 256,
+      "default": "",
+      "choices": "",
+      "new_question": true,
+      "variable": "server_ipv6",
+      "type": "password"
     }
   ]
 }
