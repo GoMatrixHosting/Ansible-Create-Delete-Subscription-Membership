@@ -193,7 +193,7 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  when: byo_bool == 'false'
+  when: byo_bool == 'False'
 
 - name: Create 'Provision a New Server' job template
   delegate_to: 127.0.0.1
@@ -216,7 +216,7 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  when: byo_bool == 'true'
+  when: byo_bool == 'True'
 
 - name: Allow user account to use 'Provision a New Server job template
   delegate_to: 127.0.0.1
