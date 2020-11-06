@@ -40,7 +40,7 @@
     },
     {
       "question_name": "Root Password (Optional)",
-      "question_description": "The BYO servers root password, only needed if public SSH key isn't loaded into it.",
+      "question_description": "The BYO servers root password, only needed if hosters public SSH key isn't loaded into it.",
       "required": false,
       "min": 0,
       "max": 256,
@@ -52,7 +52,7 @@
     },
     {
       "question_name": "Server IPv4",
-      "question_description": "The IPv4 address of the existing server.",
+      "question_description": "The IPv4 address of the existing server. Must be defined.",
       "required": true,
       "min": 0,
       "max": 256,
@@ -60,7 +60,7 @@
       "choices": "",
       "new_question": true,
       "variable": "server_ipv4",
-      "type": "password"
+      "type": "text"
     },
     {
       "question_name": "Server IPv6 (Optional)",
@@ -72,7 +72,7 @@
       "choices": "",
       "new_question": true,
       "variable": "server_ipv6",
-      "type": "password"
+      "type": "text"
     }
   ]
 }
