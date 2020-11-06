@@ -6,12 +6,13 @@
 - name: Configure byo_bool 2
   set_fact:
     byo_bool: true
-  when: subscription_id == 'byo'
+  when: subscription_id.find('v=' ~ byo) == -1
 
 - name: Generate string to append to byo
+  delegate_to: 127.0.0.1
   command: openssl rand -hex 7
   register: subscription_hex
-  when: subscription_id == 'byo'
+  when: 'byo' in subscript
 
 - name: Append string to byo
   delegate_to: 127.0.0.1
