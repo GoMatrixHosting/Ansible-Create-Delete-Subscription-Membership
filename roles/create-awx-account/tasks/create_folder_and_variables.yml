@@ -8,6 +8,9 @@
     byo_bool: true
   when: "byo" in subscription_id
 
+- debug:
+    msg: "byo_bool: {{ byo_bool }}"
+
 - name: Generate string to append to byo
   delegate_to: 127.0.0.1
   command: openssl rand -hex 7
@@ -21,7 +24,7 @@
   when: "byo" in subscription_id
 
 - debug:
-    msg: "{{ subscription_id }}"
+    msg: "subscription_id: {{ subscription_id }}"
 
 - name: Create a directory if it does not exist locally on AWX
   delegate_to: 127.0.0.1
