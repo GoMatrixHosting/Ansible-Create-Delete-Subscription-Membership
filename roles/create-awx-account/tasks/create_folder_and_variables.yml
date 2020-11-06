@@ -6,19 +6,19 @@
 - name: Configure byo_bool 2 (when 'byo' in subscription_id do)
   set_fact:
     byo_bool: true
-  when: subscription_id.find('v=' ~ 'byo') == -1
+  when: '"byo" in subscription_id'
 
 - name: Generate string to append to byo
   delegate_to: 127.0.0.1
   command: openssl rand -hex 7
   register: subscription_hex
-  when: subscription_id.find('v=' ~ 'byo') == -1
+  when: '"byo" in subscription_id'
 
 - name: Append string to byo
   delegate_to: 127.0.0.1
   command: echo "{{ subscription_id }}-{{ subscription_hex }}"
   register: subscription_id
-  when: subscription_id.find('v=' ~ 'byo') == -1
+  when: '"byo" in subscription_id'
 
 - name: Create a directory if it does not exist locally on AWX
   delegate_to: 127.0.0.1
