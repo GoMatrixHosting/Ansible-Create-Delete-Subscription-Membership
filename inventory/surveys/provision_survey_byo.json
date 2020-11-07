@@ -39,20 +39,8 @@
       "type": "text"
     },
     {
-      "question_name": "Root Password (Optional)",
-      "question_description": "The BYO servers root password, only needed if hosters public SSH key isn't loaded into it.",
-      "required": false,
-      "min": 0,
-      "max": 256,
-      "default": "",
-      "choices": "",
-      "new_question": true,
-      "variable": "root_password",
-      "type": "password"
-    },
-    {
       "question_name": "Server IPv4",
-      "question_description": "The IPv4 address of the existing server. Must be defined.",
+      "question_description": "The IPv4 address of the existing server. Must already have the AWX hosters public SSH key loaded into it.",
       "required": true,
       "min": 0,
       "max": 256,
