@@ -107,6 +107,7 @@
     scm_type: git
     scm_url: "https://gitlab.com/ChatOasis/ansible-provision-server.git"
     scm_delete_on_update: yes
+    scm_update_on_launch: yes
     state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
@@ -122,6 +123,7 @@
     scm_type: git
     scm_url: "https://gitlab.com/ChatOasis/chatoasis-matrix-docker-ansible-deploy.git"
     scm_delete_on_update: yes
+    scm_update_on_launch: yes
     state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
@@ -137,6 +139,7 @@
     scm_type: git
     scm_url: "https://gitlab.com/ChatOasis/chatoasis-awx-playbooks.git"
     scm_delete_on_update: yes
+    scm_update_on_launch: yes
     state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
