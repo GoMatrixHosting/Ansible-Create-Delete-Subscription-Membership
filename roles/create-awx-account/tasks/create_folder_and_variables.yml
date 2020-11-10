@@ -49,6 +49,12 @@
 
 # Create server_vars.yml file locally on AWX.
 
+- name: Touch the same file, but add/remove some permissions
+  file:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    state: touch
+    mode: '0600'
+
 - name: Add do_image line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
