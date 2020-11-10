@@ -8,7 +8,7 @@
 # client_email
 # member_id - login username, a string or memberpress account number [rename to 'username']
 # subscription_id - memberpress subscription number (mp-sub-5fa2a2ac5fa12 or 'byo')
-# plan_title - size of server (Micro Server, Small Server, Medium Server, Large Server, Jumbo Server)
+# plan_title - size of server is using memberpress (Micro Server, Small Server, Medium Server, Large Server, Jumbo Server) if byo this can be left blank and defined later at provision stage
 #
 # PROCESSING: Creates AWX Account for user, append random string to 'byo', creates initial organisation.yml and server_vars.yml file. Also creates initial '{{ subscription_id }} Provision Server' playbook in users account.
 #

@@ -1,4 +1,6 @@
 
+# If subscription_id == 'byo', generate a longer, unique subcription id like 'byo-xxxxxxxxxx'
+
 - name: Configure byo_bool 2
   set_fact:
     byo_bool: false
@@ -47,36 +49,6 @@
 
 # Create server_vars.yml file locally on AWX.
 
-- name: Set slug_size for plan
-  set_fact:
-    slug_size: "s-1vcpu-1gb"
-    swap_size: "2G"
-  when: plan_title=="Micro Server"
-
-- name: Set slug_size for plan
-  set_fact:
-    slug_size: "s-1vcpu-2gb"
-    swap_size: "2G"
-  when: plan_title=="Small Server"
-
-- name: Set slug_size for plan
-  set_fact:
-    slug_size: "s-2vcpu-4gb"
-    swap_size: "4G"
-  when: plan_title=="Medium Server"
-
-- name: Set slug_size for plan
-  set_fact:
-    slug_size: "s-4vcpu-8gb"
-    swap_size: "8G"
-  when: plan_title=="Large Server"
-
-- name: Set slug_size for plan
-  set_fact:
-    slug_size: "s-8vcpu-32gb"
-    swap_size: "32G"
-  when: plan_title=="Jumbo Server"
-
 - name: Add do_image line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
@@ -85,22 +57,7 @@
     mode: '0600'
     state: present
     create: yes
-
-- name: Add slug_size line to server_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
-    line: 'slug_size: {{ slug_size }}'
-    mode: '0600'
-    state: present
-
-- name: Add swap_size line to server_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
-    line: 'swap_size: {{ swap_size }}'
-    mode: '0600'
-    state: present
+  when: byo_bool|bool == false
 
 - name: Add plan_title line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
@@ -109,6 +66,7 @@
     line: 'plan_title: {{ plan_title }}'
     mode: '0600'
     state: present
+  when: plan_title is defined
 
 # Create organisation.yml file, generate password if needed.
 
