@@ -188,7 +188,7 @@
     playbook: setup.yml
     credential: "{{ member_id }} - ChatOasis testing SSH"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', './inventory/surveys/provision_survey_mp.json') }}"
+    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_mp.json') }}"
     state: present
     verbosity: 1
     job_tags: imposter-check, digitalocean-droplet
@@ -211,7 +211,7 @@
     playbook: setup.yml
     credential: "{{ member_id }} - ChatOasis testing SSH"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', './inventory/surveys/provision_survey_byo.json') }}"
+    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_byo.json') }}"
     state: present
     verbosity: 1
     job_tags: imposter-check, byo-server
