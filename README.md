@@ -38,6 +38,6 @@ INPUT (extra_variables):
 - member_id - login username, a string (eg: 'billybob')
 - subscription_id - 'byo'
 
-PROCESSING: Creates AWX Account for user, append random string to 'byo', creates initial organisation.yml and server_vars.yml file. Also creates initial '{{ subscription_id }} Provision Server' playbook in users account.
+PROCESSING: Creates AWX Account for user, append random string to 'byo', creates initial organisation.yml and server_vars.yml file. Also creates a '{{ subscription_id }} Provision Server' playbook in users account, where they will instead be prompted to connect their own server.
 
 OUTPUT: Working AWX account at provision stage.
