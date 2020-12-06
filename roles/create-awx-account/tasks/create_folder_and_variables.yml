@@ -66,6 +66,15 @@
     create: yes
   when: byo_bool|bool == false
 
+- name: Add do_image line to server_vars.yml file locally on AWX
+  delegate_to: 127.0.0.1
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    line: 'byo_bool: {{ byo_bool }}'
+    mode: '0600'
+    state: present
+    create: yes
+
 - name: Add plan_title line to server_vars.yml file locally on AWX
   delegate_to: 127.0.0.1
   lineinfile:
