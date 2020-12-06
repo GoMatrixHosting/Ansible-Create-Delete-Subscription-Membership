@@ -52,10 +52,10 @@
     },
     {
       "question_name": "Server IPv4",
-      "question_description": "The IPv4 address of the existing server. Must already have the AWX hosters public SSH key loaded into it.",
+      "question_description": "The IPv4 address of the existing server. You must already have the AWX hosters public SSH key loaded into it. At least one IP address must be specified.",
       "required": true,
       "min": 0,
-      "max": 256,
+      "max": 64,
       "default": "",
       "choices": "",
       "new_question": true,
@@ -63,11 +63,11 @@
       "type": "text"
     },
     {
-      "question_name": "Server IPv6 (Optional)",
-      "question_description": "The IPv6 address of the existing server.",
-      "required": false,
+      "question_name": "Server IPv6",
+      "question_description": "The IPv6 address of the existing server. You must already have the AWX hosters public SSH key loaded into it. At least one IP address must be specified.",
+      "required": true,
       "min": 0,
-      "max": 256,
+      "max": 64,
       "default": "",
       "choices": "",
       "new_question": true,
