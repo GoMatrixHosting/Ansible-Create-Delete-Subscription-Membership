@@ -192,7 +192,8 @@
     survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_mp.json') }}"
     state: present
     verbosity: 1
-    job_tags: imposter-check, digitalocean-droplet, digitalocean-space
+    job_tags: imposter-check, digitalocean-droplet
+    skip_tags: digitalocean-space
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
