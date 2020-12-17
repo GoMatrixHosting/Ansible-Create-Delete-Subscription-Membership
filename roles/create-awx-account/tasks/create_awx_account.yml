@@ -115,6 +115,18 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
+- name: Allow user account to read 'Ansible Provision Server' project
+  delegate_to: 127.0.0.1
+  tower_role:
+    user: "{{ member_id }}"
+    project: "{{ member_id }} - Ansible Provision Server"
+    role: read
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
 - name: Add 'Spantaleev's Deploy' project to users organisation
   delegate_to: 127.0.0.1
   tower_project:
@@ -125,6 +137,18 @@
     scm_url: "https://gitlab.com/ChatOasis/chatoasis-matrix-docker-ansible-deploy.git"
     scm_delete_on_update: yes
     scm_update_on_launch: yes
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Allow user account to read 'Spantaleev's Deploy' project
+  delegate_to: 127.0.0.1
+  tower_role:
+    user: "{{ member_id }}"
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    role: read
     state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
@@ -146,6 +170,19 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
+
+- name: Allow user account to read 'AWX Playbooks' project
+  delegate_to: 127.0.0.1
+  tower_role:
+    user: "{{ member_id }}"
+    project: "{{ member_id }} - AWX Playbooks"
+    role: read
+    state: present
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
 
 - name: Update 'Ansible Provision Server' project
   delegate_to: 127.0.0.1
