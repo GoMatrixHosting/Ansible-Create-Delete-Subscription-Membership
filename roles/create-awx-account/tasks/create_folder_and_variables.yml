@@ -14,25 +14,21 @@
     msg: "byo_bool: {{ byo_bool }}"
 
 - name: Generate hex_string to append to 'byo' and collect output
-  delegate_to: 127.0.0.1
   command: openssl rand -hex 7
   register: hex_string
   when: byo_bool|bool == true
 
 - name: Append hex_string to 'byo' and collect output
-  delegate_to: 127.0.0.1
   command: echo "{{ subscription_id }}-{{ hex_string.stdout }}"
   register: byo_string
   when: byo_bool|bool == true
 
 - name: Assign new subscription_id_final with byo_string 
-  delegate_to: 127.0.0.1
   set_fact:
     subscription_id_final: "{{ byo_string.stdout }}"
   when: byo_bool|bool == true
 
 - name: Assign new subscription_id_final with byo_string
-  delegate_to: 127.0.0.1
   set_fact:
     subscription_id_final: "{{ subscription_id }}"
   when: byo_bool|bool == false
@@ -41,7 +37,6 @@
     msg: "subscription_id: {{ subscription_id_final }}"
 
 - name: Create a directory if it does not exist locally on AWX
-  delegate_to: 127.0.0.1
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/'
     state: directory
@@ -50,14 +45,12 @@
 # Create server_vars.yml file locally on AWX.
 
 - name: Touch the same file, but add/remove some permissions
-  delegate_to: 127.0.0.1
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     state: touch
     mode: '0600'
 
 - name: Add do_image line to server_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     line: 'do_image: {{ do_image_master }}'
@@ -67,7 +60,6 @@
   when: byo_bool|bool == false
 
 - name: Add do_image line to server_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     line: 'byo_bool: {{ byo_bool }}'
@@ -76,7 +68,6 @@
     create: yes
 
 - name: Add plan_title line to server_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
     line: 'plan_title: {{ plan_title }}'
@@ -87,7 +78,6 @@
 # Create organisation.yml file, generate password if needed.
 
 - name: Check if organisation.yml file already exists on AWX
-  delegate_to: 127.0.0.1
   stat: 
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
   register: orgfile
@@ -98,20 +88,17 @@
   when: orgfile.stat.exists == false
 
 - name: Install pwgen on tower with yum
-  delegate_to: 127.0.0.1
   yum:
     name: pwgen
     state: latest
   when: orgfile.stat.exists == false
 
 - name: Generate the users password
-  delegate_to: 127.0.0.1
   command: 'pwgen -s 16 1'
   register: register_client_password
   when: orgfile.stat.exists == false
 
 - name: Add client_password line to organisation.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'client_password: "{{ register_client_password.stdout }}"'
@@ -126,7 +113,6 @@
   when: orgfile.stat.exists == false
 
 - name: Add client_email line to organisation.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'client_email: "{{ client_email }}"'
@@ -134,7 +120,6 @@
     state: present
 
 - name: Add member_id line to organisation.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'member_id: "{{ member_id }}"'
@@ -142,7 +127,6 @@
     state: present
 
 - name: Add client_first_name line to organisation.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'client_first_name: "{{ client_first_name }}"'
@@ -150,7 +134,6 @@
     state: present
 
 - name: Add client_last_name line to organisation.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     line: 'client_last_name: "{{ client_last_name }}"'
@@ -160,7 +143,6 @@
 #Create extra_vars.yml variables file.
 
 - name: Add subscription_id line to extra_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
     line: 'subscription_id: {{ subscription_id_final }}'
@@ -169,7 +151,6 @@
     create: yes
 
 - name: Add member_id line to extra_vars.yml file locally on AWX
-  delegate_to: 127.0.0.1
   lineinfile:
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
     line: 'member_id: {{ member_id }}'

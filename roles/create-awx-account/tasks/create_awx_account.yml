@@ -7,12 +7,10 @@
     file: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
 
 - name: Install tower dep
-  delegate_to: 127.0.0.1
   pip:
       name: ansible-tower-cli
 
 - name: Create AWX organisation
-  delegate_to: 127.0.0.1
   tower_organization:
     name: "{{ member_id }}"
     description: "{{ client_email }} Organisation"
@@ -23,7 +21,6 @@
   register: awxorg
 
 - name: Add AWX user
-  delegate_to: 127.0.0.1
   tower_user:
     username: "{{ member_id }}"
     password: "{{ client_password }}"
@@ -36,7 +33,6 @@
     validate_certs: yes
 
 - name: Add AWX user to organisation
-  delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
     organization: "{{ member_id }}"
@@ -47,7 +43,6 @@
     validate_certs: yes
 
 - name: Add tower inventory
-  delegate_to: 127.0.0.1
   tower_inventory:
     name: "{{ member_id }} Inventory"
     description: "{{ client_email }} inventory"
@@ -59,7 +54,6 @@
     validate_certs: yes
 
 - name: Allow user account to administrate/use this inventory
-  delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
     inventory: "{{ member_id }} Inventory"
@@ -71,7 +65,6 @@
     validate_certs: yes
 
 - name: Add dummyvalue.com host to organisations inventory
-  delegate_to: 127.0.0.1
   tower_host:
     name: "dummyvalue.com"
     description: "A placeholder host, because ansible needs a host to work on. :)"
@@ -83,7 +76,6 @@
     validate_certs: yes
 
 - name: Add 'AWX SSH Key' credential to users organisation
-  delegate_to: 127.0.0.1
   tower_credential:
     name: "{{ member_id }} - AWX SSH Key"
     description: "The SSH key for Provision/Deploy"
@@ -100,7 +92,6 @@
 # ^ SSH key loaded into the towers volume manually for now.
 
 - name: Add 'Ansible Provision Server' project to users organisation
-  delegate_to: 127.0.0.1
   tower_project:
     name: "{{ member_id }} - Ansible Provision Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
@@ -116,7 +107,6 @@
     validate_certs: yes
 
 - name: Allow user account to read 'Ansible Provision Server' project
-  delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
     project: "{{ member_id }} - Ansible Provision Server"
@@ -128,7 +118,6 @@
     validate_certs: yes
 
 - name: Add 'Spantaleev's Deploy' project to users organisation
-  delegate_to: 127.0.0.1
   tower_project:
     name: "{{ member_id }} - Matrix Docker Ansible Deploy"
     description: "Creating and updating a Matrix service on an already provisioned server."
@@ -144,7 +133,6 @@
     validate_certs: yes
 
 - name: Allow user account to read 'Spantaleev's Deploy' project
-  delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
@@ -156,7 +144,6 @@
     validate_certs: yes
 
 - name: Add 'AWX Playbooks' project to users organisation
-  delegate_to: 127.0.0.1
   tower_project:
     name: "{{ member_id }} - AWX Playbooks"
     description: "AWX playbooks for management of an already deployed server."
@@ -172,7 +159,6 @@
     validate_certs: yes
 
 - name: Allow user account to read 'AWX Playbooks' project
-  delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
     project: "{{ member_id }} - AWX Playbooks"
@@ -183,9 +169,7 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-
 - name: Update 'Ansible Provision Server' project
-  delegate_to: 127.0.0.1
   awx.awx.tower_project_update:
     project: "{{ member_id }} - Ansible Provision Server"
     timeout: 300
@@ -195,7 +179,6 @@
     validate_certs: yes
 
 - name: Update 'Spantaleev's Deploy' project
-  delegate_to: 127.0.0.1
   awx.awx.tower_project_update:
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     timeout: 300
@@ -205,7 +188,6 @@
     validate_certs: yes
 
 - name: Update 'AWX Playbooks' project
-  delegate_to: 127.0.0.1
   awx.awx.tower_project_update:
     project: "{{ member_id }} - AWX Playbooks"
     timeout: 300
@@ -215,7 +197,6 @@
     validate_certs: yes
 
 - name: Create 'Provision a New Server' job template
-  delegate_to: 127.0.0.1
   tower_job_template:
     name: "{{ subscription_id_final }} - 00 - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
@@ -238,7 +219,6 @@
   when: byo_bool|bool == false
 
 - name: Create 'Provision a New Server' job template
-  delegate_to: 127.0.0.1
   tower_job_template:
     name: "{{ subscription_id_final }} - 00 - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
@@ -261,7 +241,6 @@
   when: byo_bool|bool == true
 
 - name: Allow user account to use 'Provision a New Server job template
-  delegate_to: 127.0.0.1
   tower_role:
     user: "{{ member_id }}"
     job_template: "{{ subscription_id_final }} - 00 - Provision a New Server"

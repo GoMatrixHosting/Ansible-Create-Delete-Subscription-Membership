@@ -1,7 +1,7 @@
 
 - name: "Spawn/recreate an Organisation and add Provision script to it."
-  hosts: "dummyvalue.com"
-#  become: true
+  hosts: localhost
+  connection: local
   gather_facts: false
 
   roles:
