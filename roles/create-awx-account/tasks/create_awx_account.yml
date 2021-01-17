@@ -22,8 +22,7 @@
 
 - name: Add AWX user
   tower_user:
-    username: "{{ member_id }}"
-    password: "{{ client_password }}"
+    username: "{{ client_email }}"
     email: "{{ client_email }}"
     first_name: "{{ client_first_name }}"
     last_name: "{{ client_last_name }}"
@@ -34,7 +33,7 @@
 
 - name: Add AWX user to organisation
   tower_role:
-    user: "{{ member_id }}"
+    user: "{{ client_email }}"
     organization: "{{ member_id }}"
     role: member
     tower_host: "{{ tower_host }}"
@@ -55,7 +54,7 @@
 
 - name: Allow user account to administrate/use this inventory
   tower_role:
-    user: "{{ member_id }}"
+    user: "{{ client_email }}"
     inventory: "{{ member_id }} Inventory"
     role: use
     state: present
@@ -108,7 +107,7 @@
 
 - name: Allow user account to read 'Ansible Provision Server' project
   tower_role:
-    user: "{{ member_id }}"
+    user: "{{ client_email }}"
     project: "{{ member_id }} - Ansible Provision Server"
     role: read
     state: present
@@ -134,7 +133,7 @@
 
 - name: Allow user account to read 'Spantaleev's Deploy' project
   tower_role:
-    user: "{{ member_id }}"
+    user: "{{ client_email }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     role: read
     state: present
@@ -160,7 +159,7 @@
 
 - name: Allow user account to read 'AWX Playbooks' project
   tower_role:
-    user: "{{ member_id }}"
+    user: "{{ client_email }}"
     project: "{{ member_id }} - AWX Playbooks"
     role: read
     state: present
@@ -198,16 +197,16 @@
 
 - name: Create 'Provision a New Server' job template
   tower_job_template:
-    name: "{{ subscription_id_final }} - 00 - Provision a New Server"
+    name: "{{ subscription_id }} - 00 - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     job_type: run
     inventory: "{{ member_id }} Inventory"
     project: "{{ member_id }} - Ansible Provision Server"
     playbook: setup.yml
     credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_mp.json') }}"
+    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_digitalocean.json') }}"
     state: present
     verbosity: 1
     job_tags: imposter-check, digitalocean-droplet, setup-backup
@@ -216,20 +215,20 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  when: byo_bool|bool == false
+  when: subscription_type == 'digitalocean'
 
 - name: Create 'Provision a New Server' job template
   tower_job_template:
-    name: "{{ subscription_id_final }} - 00 - Provision a New Server"
+    name: "{{ subscription_id }} - 00 - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
+    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     job_type: run
     inventory: "{{ member_id }} Inventory"
     project: "{{ member_id }} - Ansible Provision Server"
     playbook: setup.yml
     credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_byo.json') }}"
+    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_on-premise.json') }}"
     state: present
     verbosity: 1
     job_tags: imposter-check, byo-server, setup-backup
@@ -238,12 +237,12 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  when: byo_bool|bool == true
+  when: subscription_type == 'on-premise'
 
 - name: Allow user account to use 'Provision a New Server job template
   tower_role:
-    user: "{{ member_id }}"
-    job_template: "{{ subscription_id_final }} - 00 - Provision a New Server"
+    user: "{{ client_email }}"
+    job_template: "{{ subscription_id }} - 00 - Provision a New Server"
     role: execute
     state: present
     tower_host: "{{ tower_host }}"
