@@ -36,7 +36,43 @@
 - debug:
     msg: "subscription_id: {{ subscription_id_final }}"
 
-- name: Create a directory if it does not exist locally on AWX
+- name: Ensure AWX projects directory has correct permissions
+  file:
+    path: '/var/'
+    state: directory
+    mode: '0755'
+
+- name: Ensure AWX projects directory has correct permissions
+  file:
+    path: '/var/lib/'
+    state: directory
+    mode: '0755'
+ 
+- name: Ensure AWX projects directory has correct permissions
+  file:
+    path: '/var/lib/awx/'
+    state: directory
+    mode: '0755'
+
+- name: Ensure AWX projects directory has correct permissions
+  file:
+    path: '/var/lib/awx/projects/'
+    state: directory
+    mode: '0755'
+
+- name: Ensure AWX projects directory has correct permissions
+  file:
+    path: '/var/lib/awx/projects/clients/'
+    state: directory
+    mode: '0711'
+
+- name: Ensure users directory exists and has correct permissions
+  file:
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/'
+    state: directory
+    mode: '0711'
+
+- name: Create a directory for that subscription
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/'
     state: directory
