@@ -56,7 +56,7 @@
 
 - name: Create a directory for that subscription
   file:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/'
     state: directory
     mode: '0700'
 
@@ -64,13 +64,13 @@
 
 - name: Touch the same file, but add/remove some permissions
   file:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     state: touch
     mode: '0600'
 
 - name: Add do_image line to server_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'do_image: {{ do_image_master }}'
     mode: '0600'
     state: present
@@ -78,14 +78,14 @@
 
 - name: Add do_image line to server_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'subscription_type: {{ subscription_type }}'
     mode: '0600'
     state: present
 
 - name: Add plan_title line to server_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'plan_title: {{ plan_title }}'
     mode: '0600'
     state: present
