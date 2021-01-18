@@ -95,10 +95,11 @@
 - name: Touch the same file, but add/remove some permissions
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
-    owner: root
-    group: webhook
     mode: '0660'
     state: touch
+    
+- name: Change owner:group of the organisation.yml file
+  command: chown root:webhook /var/lib/awx/projects/clients/{{ member_id }}/organisation.yml
 
 - name: Add client_email line to organisation.yml file locally on AWX
   lineinfile:
