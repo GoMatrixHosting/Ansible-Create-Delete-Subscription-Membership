@@ -96,10 +96,14 @@
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     mode: '0660'
+#    user: root
+#    group: webhook
     state: touch
     
-- name: Change owner:group of the organisation.yml file
-  command: chown root:webhook /var/lib/awx/projects/clients/{{ member_id }}/organisation.yml
+#- name: Change owner:group of the organisation.yml file
+#  command: chown root:webhook /var/lib/awx/projects/clients/{{ member_id }}/organisation.yml
+
+# https://github.com/ansible/ansible/issues/73269
 
 - name: Add client_email line to organisation.yml file locally on AWX
   lineinfile:
