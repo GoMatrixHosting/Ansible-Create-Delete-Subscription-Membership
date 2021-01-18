@@ -91,13 +91,18 @@
     state: present
 
 # Create organisation.yml file
+
+- name: Ensure group "webhook" exists
+  group:
+    name: webhook
+    state: present
   
 - name: Touch the same file, but add/remove some permissions
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     mode: '0660'
-#    user: root
-#    group: webhook
+    user: root
+    group: webhook
     state: touch
     
 #- name: Change owner:group of the organisation.yml file
@@ -111,7 +116,7 @@
     line: 'client_email: "{{ client_email }}"'
     mode: '0660'
     owner: root
-#    group: webhook
+    group: webhook
     state: present
 
 - name: Add member_id line to organisation.yml file locally on AWX
@@ -120,7 +125,7 @@
     line: 'member_id: "{{ member_id }}"'
     mode: '0660'
     owner: root
-#    group: webhook
+    group: webhook
     state: present
 
 - name: Add client_first_name line to organisation.yml file locally on AWX
@@ -129,7 +134,7 @@
     line: 'client_first_name: "{{ client_first_name }}"'
     mode: '0660'
     owner: root
-#    group: webhook
+    group: webhook
     state: present
 
 - name: Add client_last_name line to organisation.yml file locally on AWX
@@ -138,7 +143,7 @@
     line: 'client_last_name: "{{ client_last_name }}"'
     mode: '0660'
     owner: root
-#    group: webhook
+    group: webhook
     state: present
 
 #Create extra_vars.yml variables file.
@@ -157,5 +162,4 @@
     line: 'member_id: {{ member_id }}'
     mode: '0600'
     state: present
-
 

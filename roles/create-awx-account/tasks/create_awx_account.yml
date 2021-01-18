@@ -28,6 +28,7 @@
 - name: Generate the users password
   command: 'pwgen -s 20 1'
   register: register_client_password
+  # ^ output should be hidden
 
 - name: Add AWX user
   tower_user:
