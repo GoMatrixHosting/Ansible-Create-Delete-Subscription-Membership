@@ -101,7 +101,7 @@
   file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
     mode: '0660'
-    user: root
+    owner: root
     group: webhook
     state: touch
     
