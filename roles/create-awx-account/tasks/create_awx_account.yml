@@ -20,27 +20,27 @@
     validate_certs: yes
   register: awxorg
   
-- name: Install pwgen on tower with yum
-  yum:
-    name: pwgen
-    state: latest
+#- name: Install pwgen on tower with yum
+#  yum:
+#    name: pwgen
+#    state: latest
 
-- name: Generate the users password
-  command: 'pwgen -s 20 1'
-  register: register_client_password
+#- name: Generate the users password
+#  command: 'pwgen -s 20 1'
+#  register: register_client_password
   # ^ output should be hidden
 
-- name: Add AWX user
-  tower_user:
-    username: "{{ client_email }}"
-    email: "{{ client_email }}"
-    password: register_client_password.stdout
-    first_name: "{{ client_first_name }}"
-    last_name: "{{ client_last_name }}"
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
+#- name: Add AWX user
+#  tower_user:
+#    username: "{{ client_email }}"
+#    email: "{{ client_email }}"
+#    password: register_client_password.stdout
+#    first_name: "{{ client_first_name }}"
+#    last_name: "{{ client_last_name }}"
+#    tower_host: "{{ tower_host }}"
+#    tower_username: "{{ tower_username }}"
+#    tower_password: "{{ tower_password }}"
+#    validate_certs: yes
 
 - name: Add AWX user to organisation
   tower_role:
