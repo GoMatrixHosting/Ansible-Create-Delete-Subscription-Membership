@@ -111,7 +111,7 @@
     line: 'client_email: "{{ client_email }}"'
     mode: '0660'
     owner: root
-    group: webhook
+#    group: webhook
     state: present
 
 - name: Add member_id line to organisation.yml file locally on AWX
@@ -120,7 +120,7 @@
     line: 'member_id: "{{ member_id }}"'
     mode: '0660'
     owner: root
-    group: webhook
+#    group: webhook
     state: present
 
 - name: Add client_first_name line to organisation.yml file locally on AWX
@@ -129,7 +129,7 @@
     line: 'client_first_name: "{{ client_first_name }}"'
     mode: '0660'
     owner: root
-    group: webhook
+#    group: webhook
     state: present
 
 - name: Add client_last_name line to organisation.yml file locally on AWX
@@ -138,7 +138,7 @@
     line: 'client_last_name: "{{ client_last_name }}"'
     mode: '0660'
     owner: root
-    group: webhook
+#    group: webhook
     state: present
 
 #Create extra_vars.yml variables file.
