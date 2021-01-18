@@ -8,12 +8,12 @@
 - name: Configure subscription_type 1
   set_fact:
     subscription_type: 'digitalocean'
-  when: plan_title.find('v=' ~ digitalocean_string) == -1
+  when: digitalocean_string in plan_title
   
 - name: Configure subscription_type 2
   set_fact:
     subscription_type: 'on_premise'
-  when: plan_title.find('v=' ~ on_premise_string) == -1
+  when: on_premise_string in plan_title
 
 - debug:
     msg: "subscription_type: {{ subscription_type }}"
