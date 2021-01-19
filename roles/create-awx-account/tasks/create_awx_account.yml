@@ -42,11 +42,22 @@
 #    tower_password: "{{ tower_password }}"
 #    validate_certs: yes
 
-- name: Add AWX user to organisation
-  tower_role:
-    user: "{{ client_email }}"
+#- name: Add AWX user to organisation
+#  tower_role:
+#    user: "{{ client_email }}"
+#    organization: "{{ member_id }}"
+#    role: member
+#    tower_host: "{{ tower_host }}"
+#    tower_username: "{{ tower_username }}"
+#    tower_password: "{{ tower_password }}"
+#    validate_certs: yes
+
+- name: Create a team for the user
+  tower_team:
+    name: "{{ member_id }}"
+    description: "{{ client_email }} Team"
     organization: "{{ member_id }}"
-    role: member
+    state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
@@ -54,7 +65,7 @@
 
 - name: Add tower inventory
   tower_inventory:
-    name: "{{ member_id }} Inventory"
+    name: "{{ member_id }}"
     description: "{{ client_email }} inventory"
     organization: "{{ member_id }}"
     state: present
@@ -63,10 +74,10 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-- name: Allow user account to administrate/use this inventory
+- name: Allow team to administrate/use this inventory
   tower_role:
-    user: "{{ client_email }}"
-    inventory: "{{ member_id }} Inventory"
+    team: "{{ member_id }}"
+    inventory: "{{ member_id }}"
     role: use
     state: present
     tower_host: "{{ tower_host }}"
@@ -78,7 +89,7 @@
   tower_host:
     name: "dummyvalue.com"
     description: "A placeholder host, because ansible needs a host to work on. :)"
-    inventory: "{{ member_id }} Inventory"
+    inventory: "{{ member_id }}"
     state: present
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
@@ -116,9 +127,9 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-- name: Allow user account to read 'Ansible Provision Server' project
+- name: Allow team to read 'Ansible Provision Server' project
   tower_role:
-    user: "{{ client_email }}"
+    team: "{{ member_id }}"
     project: "{{ member_id }} - Ansible Provision Server"
     role: read
     state: present
@@ -142,9 +153,9 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-- name: Allow user account to read 'Spantaleev's Deploy' project
+- name: Allow team to read 'Spantaleev's Deploy' project
   tower_role:
-    user: "{{ client_email }}"
+    team: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     role: read
     state: present
@@ -168,9 +179,9 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-- name: Allow user account to read 'AWX Playbooks' project
+- name: Allow team to read 'AWX Playbooks' project
   tower_role:
-    user: "{{ client_email }}"
+    team: "{{ member_id }}"
     project: "{{ member_id }} - AWX Playbooks"
     role: read
     state: present
@@ -250,9 +261,9 @@
     validate_certs: yes
   when: subscription_type == 'on-premise'
 
-- name: Allow user account to use 'Provision a New Server job template
+- name: Allow team to use 'Provision a New Server job template
   tower_role:
-    user: "{{ client_email }}"
+    team: "{{ member_id }}"
     job_template: "{{ subscription_id }} - 00 - Provision a New Server"
     role: execute
     state: present
