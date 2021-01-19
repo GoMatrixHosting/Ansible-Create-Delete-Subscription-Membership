@@ -259,7 +259,7 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-  when: subscription_type == 'on-premise'
+  when: subscription_type == 'on_premise'
 
 - name: Allow team to use 'Provision a New Server job template
   tower_role:
