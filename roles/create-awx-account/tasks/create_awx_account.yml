@@ -261,7 +261,7 @@
     validate_certs: yes
   when: subscription_type == 'on_premise'
 
-- name: Allow team to use 'Provision a New Server job template
+- name: Allow team to use 'Provision a New Server' job template
   tower_role:
     team: "{{ member_id }}"
     job_template: "{{ subscription_id }} - 00 - Provision a New Server"
