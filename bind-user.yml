@@ -1,0 +1,12 @@
+
+- name: "Spawn/recreate an Organisation and add Provision script to it."
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+- name: Add user to the appropriate team
+  tower_role:
+    user: "{{ client_email }}"
+    target_team: "{{ member_id }}"
+    role: member
+    state: present
