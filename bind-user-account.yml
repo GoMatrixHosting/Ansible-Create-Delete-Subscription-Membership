@@ -10,4 +10,4 @@
         user: "{{ client_email }}"
         target_team: "{{ member_id }}"
         role: member
-       state: present
+        state: present
