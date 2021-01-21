@@ -4,9 +4,10 @@
   connection: local
   gather_facts: false
 
-- name: Add user to the appropriate team
-  tower_role:
-    user: "{{ client_email }}"
-    target_team: "{{ member_id }}"
-    role: member
-    state: present
+tasks:
+  - name: Add user to the appropriate team
+    tower_role:
+      user: "{{ client_email }}"
+      target_team: "{{ member_id }}"
+      role: member
+      state: present
