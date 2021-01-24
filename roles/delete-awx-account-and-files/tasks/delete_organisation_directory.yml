@@ -6,12 +6,21 @@
   group:
     name: webhook
     state: present
-
-- name: Remove entry for user from client-list file
+    
+- name: Remove bound entry for user from client-list file
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/client-list'
+    line: '{{ member_id }},{{ client_email }},bound'
+    mode: '0660'
+    owner: root
+    group: webhook
+    state: absent
+    
+- name: Remove non-bound entry for user from client-list file
   lineinfile:
     dest: '/var/lib/awx/projects/clients/client-list'
     line: '{{ member_id }},{{ client_email }}'
     mode: '0660'
     owner: root
     group: webhook
-    state: present
+    state: absent
