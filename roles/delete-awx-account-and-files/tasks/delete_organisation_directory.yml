@@ -1,0 +1,12 @@
+    
+- name: Delete the organisations directory on AWX
+  shell: "rm -r /var/lib/awx/projects/clients/{{ member_id }}"
+    
+- name: Remove entry for user from client-list file
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/client-list'
+    line: '{{ member_id }},{{ client_email }}'
+    mode: '0660'
+    owner: root
+    group: webhook
+    state: present

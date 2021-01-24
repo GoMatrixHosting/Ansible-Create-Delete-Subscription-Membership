@@ -1,0 +1,12 @@
+
+# Load required variables
+- import_tasks: "{{ role_path }}/tasks/load_variables.yml"
+  tags: delete-membership
+
+# Delete AWX account
+- import_tasks: "{{ role_path }}/tasks/delete_awx_account.yml"
+  tags: delete-membership
+
+# Delete organisation directories
+- import_tasks: "{{ role_path }}/tasks/delete_organisation_directory.yml"
+  tags: delete-membership
