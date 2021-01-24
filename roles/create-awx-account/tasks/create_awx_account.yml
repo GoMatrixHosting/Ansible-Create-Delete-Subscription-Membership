@@ -190,32 +190,32 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
 
-- name: Update 'Ansible Provision Server' project
-  awx.awx.tower_project_update:
-    project: "{{ member_id }} - Ansible Provision Server"
-    timeout: 300
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
+#- name: Update 'Ansible Provision Server' project
+#  awx.awx.tower_project_update:
+#    project: "{{ member_id }} - Ansible Provision Server"
+#    timeout: 300
+#    tower_host: "{{ tower_host }}"
+#    tower_username: "{{ tower_username }}"
+#    tower_password: "{{ tower_password }}"
+#    validate_certs: yes
 
-- name: Update 'Spantaleev's Deploy' project
-  awx.awx.tower_project_update:
-    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
-    timeout: 300
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
+#- name: Update 'Spantaleev's Deploy' project
+#  awx.awx.tower_project_update:
+#    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+#    timeout: 300
+#    tower_host: "{{ tower_host }}"
+#    tower_username: "{{ tower_username }}"
+#    tower_password: "{{ tower_password }}"
+#    validate_certs: yes
 
-- name: Update 'AWX Playbooks' project
-  awx.awx.tower_project_update:
-    project: "{{ member_id }} - AWX Playbooks"
-    timeout: 300
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
+#- name: Update 'AWX Playbooks' project
+#  awx.awx.tower_project_update:
+#    project: "{{ member_id }} - AWX Playbooks"
+#    timeout: 300
+#    tower_host: "{{ tower_host }}"
+#    tower_username: "{{ tower_username }}"
+#    tower_password: "{{ tower_password }}"
+#    validate_certs: yes
 
 - name: Create 'Provision a New Server' job template
   tower_job_template:
