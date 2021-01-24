@@ -1,4 +1,8 @@
 
+- name: Install tower dep
+  pip:
+      name: ansible-tower-cli
+
 - name: Remove original 'Provision Server' job template
   tower_job_template:
     name: "{{ subscription_id }} - 00 - Provision a New Server"
