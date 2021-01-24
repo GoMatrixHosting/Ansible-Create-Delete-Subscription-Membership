@@ -1,7 +1,12 @@
     
 - name: Delete the organisations directory on AWX
   shell: "rm -r /var/lib/awx/projects/clients/{{ member_id }}"
-    
+
+- name: Ensure group "webhook" exists
+  group:
+    name: webhook
+    state: present
+
 - name: Remove entry for user from client-list file
   lineinfile:
     dest: '/var/lib/awx/projects/clients/client-list'
