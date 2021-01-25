@@ -51,7 +51,16 @@
     tower_username: "{{ tower_username }}"
     tower_password: "{{ tower_password }}"
     validate_certs: yes
-    
+
+- name: Delete AWX user
+  tower_user:
+    name: "{{ client_email }}"
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
 - name: Delete AWX team
   tower_team:
     name: "{{ member_id }}"
