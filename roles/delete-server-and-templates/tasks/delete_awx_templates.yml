@@ -112,7 +112,7 @@
   tower_host:
     name: "matrix.{{ matrix_domain }}"
     description: "{{ matrix_domain }} Matrix Server"
-    inventory: "{{ member_id }} Inventory"
+    inventory: "{{ member_id }}"
     state: absent
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
