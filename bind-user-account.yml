@@ -1,5 +1,5 @@
 
-- name: "Spawn/recreate an Organisation and add Provision script to it."
+- name: "Binds an enterprise user to the appropriate team upon first login."
   hosts: localhost
   connection: local
   gather_facts: false
