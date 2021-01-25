@@ -1,0 +1,122 @@
+
+- name: Install tower dep
+  pip:
+      name: ansible-tower-cli
+
+- name: Remove original 'Provision Server' job template
+  tower_job_template:
+    name: "{{ subscription_id }} - 00 - Provision a New Server"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+
+- name: Remove schedule for 'Deploy a New Server' job template
+  awx.awx.tower_schedule:
+    name: "{{ matrix_domain }} - 0 - Update Server Schedule"
+    enabled: yes
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Deploy/Update a Server' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 0 - Deploy/Update a Server"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Start/Restart all Services' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 0 - Start/Restart all Services"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Stop all Services' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 0 - Stop all Services"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Configure Element' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Element"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Configure Synapse' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Synapse"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Configure Jitsi' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Jitsi"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Configure Ma1sd' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Ma1sd"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Create User' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 2 - Create User"
+    job_type: run
+    project: "{{ member_id }} - AWX Playbooks"
+    playbook: create_user.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Configure Website + Access Backup' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Website + Access Backup"
+    job_type: run
+    project: "{{ member_id }} - AWX Playbooks"
+    playbook: create_user.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove 'Configure Synapse Admin' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Synapse Admin"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
+
+- name: Remove host from organisations inventory
+  tower_host:
+    name: "matrix.{{ matrix_domain }}"
+    description: "{{ matrix_domain }} Matrix Server"
+    inventory: "{{ member_id }}"
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+  when: matrix_domain is defined
+

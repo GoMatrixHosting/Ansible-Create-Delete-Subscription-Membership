@@ -29,7 +29,7 @@ PROCESSING: Creates AWX Account for user, creates initial organisation.yml and s
 
 OUTPUT: Working AWX account at provision stage.
 
-# BYO Mode
+# On-Premises Mode
 
 INPUT (extra_variables):
 - client_first_name
@@ -41,3 +41,32 @@ INPUT (extra_variables):
 PROCESSING: Creates AWX Account for user, append random string to 'byo', creates initial organisation.yml and server_vars.yml file. Also creates a '{{ subscription_id }} Provision Server' playbook in users account, where they will instead be prompted to connect their own server.
 
 OUTPUT: Working AWX account at provision stage.
+
+# Ansible Delete Subscription
+
+Deletes a subscription and/or a membership.
+
+# Delete Subscription
+
+TAGS:
+delete-subscription
+
+INPUT (extra_variables): 
+- subscription_id - The subscription id. (eg: 'mp-sub-5fa2a2ac5fa12')
+- member_id - The login username for the AWX account.
+
+PROCESSING: Removes job templates, digitalocean resources, and files/folders associated with a subscription. Later: Add queue to delay deletion of digitalocean resources for 2-7 days.
+
+OUTPUT:
+
+# Delete Membership
+
+TAGS:
+delete-membership
+
+INPUT (extra_variables): 
+- member_id - The login username for the AWX account.
+
+PROCESSING: Playbook to remove clients AWX Organisation and local files on the AWX server.
+
+OUTPUT:

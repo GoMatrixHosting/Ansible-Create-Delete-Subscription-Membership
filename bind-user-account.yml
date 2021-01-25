@@ -1,0 +1,13 @@
+
+- name: "Binds an enterprise user to the appropriate team upon first login."
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Add user to the appropriate team
+      tower_role:
+        user: "{{ client_email }}"
+        target_team: "{{ member_id }}"
+        role: member
+        state: present

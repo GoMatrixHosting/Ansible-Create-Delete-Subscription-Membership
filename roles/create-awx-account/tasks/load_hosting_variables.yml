@@ -2,3 +2,4 @@
 - name: Include hosting vars of digital_ocean.yml
   include_vars:
     file: /var/lib/awx/projects/hosting/hosting_vars.yml
+  no_log: True

@@ -1,40 +1,22 @@
 
-# If subscription_id == 'byo', generate a longer, unique subcription id like 'byo-xxxxxxxxxx'
 
-- name: Configure byo_bool 2
+- name: Set sub type strings
   set_fact:
-    byo_bool: false
+    digitalocean_string: 'DigitalOcean'
+    on_premise_string: 'On-Premise'
 
-- name: Configure byo_bool 2 (when 'byo' in subscription_id make byo_bool true)
+- name: Configure subscription_type 1
   set_fact:
-    byo_bool: true
-  when: subscription_id == 'byo'
+    subscription_type: 'digitalocean'
+  when: digitalocean_string in plan_title
+  
+- name: Configure subscription_type 2
+  set_fact:
+    subscription_type: 'on_premise'
+  when: on_premise_string in plan_title
 
 - debug:
-    msg: "byo_bool: {{ byo_bool }}"
-
-- name: Generate hex_string to append to 'byo' and collect output
-  command: openssl rand -hex 7
-  register: hex_string
-  when: byo_bool|bool == true
-
-- name: Append hex_string to 'byo' and collect output
-  command: echo "{{ subscription_id }}-{{ hex_string.stdout }}"
-  register: byo_string
-  when: byo_bool|bool == true
-
-- name: Assign new subscription_id_final with byo_string 
-  set_fact:
-    subscription_id_final: "{{ byo_string.stdout }}"
-  when: byo_bool|bool == true
-
-- name: Assign new subscription_id_final with byo_string
-  set_fact:
-    subscription_id_final: "{{ subscription_id }}"
-  when: byo_bool|bool == false
-
-- debug:
-    msg: "subscription_id: {{ subscription_id_final }}"
+    msg: "subscription_type: {{ subscription_type }}"
 
 - name: Ensure AWX projects directory has correct permissions
   file:
@@ -74,81 +56,73 @@
 
 - name: Create a directory for that subscription
   file:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/'
     state: directory
     mode: '0700'
+    
+# Configure client-list file
+
+- name: Ensure group "webhook" exists
+  group:
+    name: webhook
+    state: present
+
+- name: Touch client-list file, but add/remove some permissions
+  file:
+    path: '/var/lib/awx/projects/clients/client-list'
+    mode: '0660'
+    owner: root
+    group: webhook
+    state: touch
+    
+- name: Add entry for user to client-list file
+  lineinfile:
+    dest: '/var/lib/awx/projects/clients/client-list'
+    line: '{{ member_id }},{{ client_email }}'
+    mode: '0660'
+    owner: root
+    group: webhook
+    state: present
 
 # Create server_vars.yml file locally on AWX.
 
 - name: Touch the same file, but add/remove some permissions
   file:
-    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     state: touch
     mode: '0600'
 
 - name: Add do_image line to server_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'do_image: {{ do_image_master }}'
     mode: '0600'
     state: present
-    create: yes
-  when: byo_bool|bool == false
+  when: subscription_type == 'digitalocean'
 
 - name: Add do_image line to server_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
-    line: 'byo_bool: {{ byo_bool }}'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
+    line: 'subscription_type: {{ subscription_type }}'
     mode: '0600'
     state: present
-    create: yes
 
 - name: Add plan_title line to server_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/server_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/server_vars.yml'
     line: 'plan_title: {{ plan_title }}'
     mode: '0600'
     state: present
-  when: plan_title is defined
 
-# Create organisation.yml file, generate password if needed.
-
-- name: Check if organisation.yml file already exists on AWX
-  stat: 
+# Create organisation.yml file
+  
+- name: Touch the same file, but add/remove some permissions
+  file:
     path: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
-  register: orgfile
-
-- name: Set generate_password to true if organisation.yml doesn't exist
-  set_fact:
-    generate_password: true
-  when: orgfile.stat.exists == false
-
-- name: Install pwgen on tower with yum
-  yum:
-    name: pwgen
-    state: latest
-  when: orgfile.stat.exists == false
-
-- name: Generate the users password
-  command: 'pwgen -s 16 1'
-  register: register_client_password
-  when: orgfile.stat.exists == false
-
-- name: Add client_password line to organisation.yml file locally on AWX
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
-    line: 'client_password: "{{ register_client_password.stdout }}"'
     mode: '0660'
     owner: root
     group: webhook
-    state: present
-    create: yes
-  when: orgfile.stat.exists == false
-
-- name: Set client_password within playbook for account creation
-  set_fact:
-    client_password: "{{ register_client_password.stdout }}"
-  when: orgfile.stat.exists == false
+    state: touch
 
 - name: Add client_email line to organisation.yml file locally on AWX
   lineinfile:
@@ -190,17 +164,16 @@
 
 - name: Add subscription_id line to extra_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
-    line: 'subscription_id: {{ subscription_id_final }}'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    line: 'subscription_id: {{ subscription_id }}'
     mode: '0600'
     state: present
     create: yes
 
 - name: Add member_id line to extra_vars.yml file locally on AWX
   lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id_final }}/extra_vars.yml'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
     line: 'member_id: {{ member_id }}'
     mode: '0600'
     state: present
-
 

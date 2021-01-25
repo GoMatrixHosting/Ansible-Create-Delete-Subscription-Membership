@@ -1,0 +1,90 @@
+
+- name: Remove 'Ansible Provision Server' project to users organisation
+  tower_project:
+    name: "{{ member_id }} - Ansible Provision Server"
+    description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
+    organization: "{{ member_id }}"
+    scm_type: git
+    scm_url: "https://gitlab.com/ChatOasis/ansible-provision-server.git"
+    scm_delete_on_update: yes
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Remove 'Spantaleev's Deploy' project to users organisation
+  tower_project:
+    name: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    description: "Creating and updating a Matrix service on an already provisioned server."
+    organization: "{{ member_id }}"
+    scm_type: git
+    scm_url: "https://gitlab.com/ChatOasis/chatoasis-matrix-docker-ansible-deploy.git"
+    scm_delete_on_update: yes
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Remove 'AWX Playbooks' project to users organisation
+  tower_project:
+    name: "{{ member_id }} - AWX Playbooks"
+    description: "AWX playbooks for management of an already deployed server."
+    organization: "{{ member_id }}"
+    scm_type: git
+    scm_url: "https://gitlab.com/ChatOasis/chatoasis-awx-playbooks.git"
+    scm_delete_on_update: yes
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Delete AWX user from team
+  tower_role:
+    user: "{{ client_email }}"
+    target_team: "{{ member_id }}"
+    role: member
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Delete AWX user
+  tower_user:
+    username: "{{ client_email }}"
+    email: "dummyvalue@protonmail.com"
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Delete AWX team
+  tower_team:
+    name: "{{ member_id }}"
+    organization: "{{ member_id }}"
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+
+- name: Delete AWX organisation
+  tower_organization:
+    name: "{{ member_id }}"
+    description: "{{ client_email }} Organisation"
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+  register: awxorg
+
+
+
+
+
+
