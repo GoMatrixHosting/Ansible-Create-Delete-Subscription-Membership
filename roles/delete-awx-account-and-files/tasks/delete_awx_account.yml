@@ -54,7 +54,7 @@
 
 - name: Delete AWX user
   tower_user:
-    name: "{{ client_email }}"
+    username: "{{ client_email }}"
     state: absent
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
