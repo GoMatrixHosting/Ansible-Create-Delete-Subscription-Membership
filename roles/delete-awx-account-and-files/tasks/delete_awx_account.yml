@@ -55,6 +55,7 @@
 - name: Delete AWX user
   tower_user:
     username: "{{ client_email }}"
+    email: "dummyvalue@protonmail.com"
     state: absent
     tower_host: "{{ tower_host }}"
     tower_username: "{{ tower_username }}"
