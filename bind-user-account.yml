@@ -11,7 +11,4 @@
         target_team: "{{ member_id }}"
         role: member
         state: present
-         tower_host: "{{ tower_host }}"
-        tower_username: "{{ tower_username }}"
-        tower_password: "{{ tower_password }}"
-        validate_certs: yes
+

@@ -9,18 +9,12 @@
       tower_organization:
         name: "{{ member_id }}"
         description: "{{ client_email }} Organisation"
-        tower_host: "{{ tower_host }}"
-        tower_username: "{{ tower_username }}"
-        tower_password: "{{ tower_password }}"
-        validate_certs: yes
+        state: present
     
-    - name: Create a team for the user
+    - name: Create a Team for the user
       tower_team:
         name: "{{ member_id }}"
         description: "{{ client_email }} Team"
         organization: "{{ member_id }}"
         state: present
-        tower_host: "{{ tower_host }}"
-        tower_username: "{{ tower_username }}"
-        tower_password: "{{ tower_password }}"
-        validate_certs: yes
+
