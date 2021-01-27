@@ -26,6 +26,15 @@
     playbook: setup.yml
     state: absent
   when: matrix_domain is defined
+  
+- name: Remove 'Self-Check' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 0 - Self-Check"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+  when: matrix_domain is defined
 
 - name: Remove 'Start/Restart all Services' job template
   tower_job_template:
