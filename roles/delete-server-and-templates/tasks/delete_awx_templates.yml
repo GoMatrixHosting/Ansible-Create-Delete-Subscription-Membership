@@ -10,12 +10,20 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
 
 - name: Remove schedule for 'Deploy a New Server' job template
   awx.awx.tower_schedule:
     name: "{{ matrix_domain }} - 0 - Update Server Schedule"
     enabled: yes
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Deploy/Update a Server' job template
@@ -25,6 +33,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
   
 - name: Remove 'Self-Check' job template
@@ -34,6 +46,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Start/Restart all Services' job template
@@ -43,6 +59,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Stop all Services' job template
@@ -52,6 +72,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Configure Element' job template
@@ -61,6 +85,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Configure Synapse' job template
@@ -70,6 +98,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Configure Jitsi' job template
@@ -79,6 +111,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Configure Ma1sd' job template
@@ -88,6 +124,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Create User' job template
@@ -97,6 +137,10 @@
     project: "{{ member_id }} - AWX Playbooks"
     playbook: create_user.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Configure Website + Access Backup' job template
@@ -106,6 +150,10 @@
     project: "{{ member_id }} - AWX Playbooks"
     playbook: create_user.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove 'Configure Synapse Admin' job template
@@ -115,6 +163,10 @@
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
     state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
   when: matrix_domain is defined
 
 - name: Remove host from organisations inventory
