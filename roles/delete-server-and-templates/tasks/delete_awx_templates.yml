@@ -168,6 +168,19 @@
     tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
+  
+- name: Remove 'Configure Corporal' job template
+  tower_job_template:
+    name: "{{ matrix_domain }} - 1 - Configure Corporal"
+    job_type: run
+    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
+    playbook: setup.yml
+    state: absent
+    tower_host: "{{ tower_host }}"
+    tower_username: "{{ tower_username }}"
+    tower_password: "{{ tower_password }}"
+    validate_certs: yes
+  when: matrix_domain is defined
 
 - name: Remove host from organisations inventory
   tower_host:
