@@ -5,7 +5,7 @@
 
 - name: Remove original 'Provision Server' job template
   tower_job_template:
-    name: "{{ subscription_id }} - 00 - Provision a New Server"
+    name: "0 - {{ subscription_id }} - Provision a New Server"
     job_type: run
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
