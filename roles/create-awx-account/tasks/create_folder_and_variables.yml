@@ -153,18 +153,24 @@
 
 #Create extra_vars.yml variables file.
 
-- name: Add subscription_id line to extra_vars.yml file locally on AWX
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    line: 'subscription_id: {{ subscription_id }}'
-    mode: '0600'
-    state: present
-    create: yes
+#- name: Add subscription_id line to extra_vars.yml file locally on AWX
+#  lineinfile:
+#    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+#    line: 'subscription_id: {{ subscription_id }}'
+#    mode: '0600'
+#    state: present
+#    create: yes
 
-- name: Add member_id line to extra_vars.yml file locally on AWX
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    line: 'member_id: {{ member_id }}'
-    mode: '0600'
-    state: present
+#- name: Add member_id line to extra_vars.yml file locally on AWX
+#  lineinfile:
+#    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+#    line: 'member_id: {{ member_id }}'
+#    mode: '0600'
+#    state: present
+
+- name: Save new 'extra_vars.json' via template
+  template:
+    src: './roles/create-awx-account/templates/extra_vars.json.j2'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json'
+
 
