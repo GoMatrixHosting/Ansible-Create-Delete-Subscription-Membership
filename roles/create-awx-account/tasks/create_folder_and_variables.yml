@@ -172,5 +172,6 @@
   template:
     src: './roles/create-awx-account/templates/extra_vars.json.j2'
     dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json'
+    mode: '0600'
 
 
