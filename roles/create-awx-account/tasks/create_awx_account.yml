@@ -6,9 +6,9 @@
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
 
-- name: Install tower dep
-  pip:
-      name: ansible-tower-cli
+#- name: Install tower dep
+#  pip:
+#      name: ansible-tower-cli
 
 #- name: Create AWX organisation
 #  tower_organization:

@@ -1,8 +1,14 @@
 
-- name: Install tower dep
-  pip:
-      name: ansible-tower-cli
+#- name: Install tower dep
+#  pip:
+#      name: ansible-tower-cli
 
+- name: Install jq in AWX
+  delegate_to: 127.0.0.1
+  yum:
+    name: jq
+    state: latest
+    
 - name: Collect AWX admin token the hard way!
   delegate_to: 127.0.0.1
   shell: |
