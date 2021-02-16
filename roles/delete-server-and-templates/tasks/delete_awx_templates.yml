@@ -1,8 +1,4 @@
 
-#- name: Install tower dep
-#  pip:
-#      name: ansible-tower-cli
-
 - name: Install jq in AWX
   delegate_to: 127.0.0.1
   yum:
@@ -25,8 +21,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
 
 - name: Remove schedule for 'Deploy a New Server' job template
@@ -36,8 +30,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -50,8 +42,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
   
@@ -64,8 +54,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -78,8 +66,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -92,8 +78,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -106,8 +90,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -120,8 +102,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -134,8 +114,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -148,8 +126,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -162,8 +138,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -176,8 +150,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -190,8 +162,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
   
@@ -204,8 +174,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"
     validate_certs: yes
   when: matrix_domain is defined
 
@@ -217,8 +185,6 @@
     state: absent
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
-    #tower_username: "{{ tower_username }}"
-    #tower_password: "{{ tower_password }}"}}"
     validate_certs: yes
   when: matrix_domain is defined
 
