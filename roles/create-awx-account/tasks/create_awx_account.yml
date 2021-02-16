@@ -3,6 +3,10 @@
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
 
+- name: Include vaulted SSH password variable
+  include_vars:
+    file: /var/lib/awx/projects/hosting/vaulted_ssh_password.yml
+
 - name: Install jq in AWX
   delegate_to: 127.0.0.1
   yum:
