@@ -6,6 +6,7 @@
 - name: Include vaulted SSH password variable
   include_vars:
     file: /var/lib/awx/projects/hosting/vaulted_ssh_password.yml
+  no_log: true
 
 - name: Install jq in AWX
   delegate_to: 127.0.0.1
@@ -55,15 +56,13 @@
     name: "{{ member_id }} - AWX SSH Key"
     description: "The SSH key for Provision/Deploy"
     organization: "{{ member_id }}"
-    kind: ssh
-    ssh_key_data: "{{ lookup('file', '/var/lib/awx/projects/hosting/private.key') }}"
-    ssh_key_unlock: "{{ private_ssh_key_password }}"
-    state: present
+    credential_type: ssh
+    inputs:
+      ssh_key_data: "{{ lookup('file', '/var/lib/awx/projects/hosting/private.key') }}"
+      ssh_key_unlock: "{{ private_ssh_key_password }}"
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
-
-# ^ SSH key loaded into the towers volume manually for now. [testing new method]
 
 - name: Add 'Ansible Provision Server' project to users organisation
   awx.awx.tower_project:
