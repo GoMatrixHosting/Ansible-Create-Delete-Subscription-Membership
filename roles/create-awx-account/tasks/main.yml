@@ -1,10 +1,17 @@
 
 # Loads initial hosting variables.
 - import_tasks: "{{ role_path }}/tasks/load_hosting_variables.yml"
+  tags: always
+
+# Create organisation and team if it's a manual subscription
+- import_tasks: "{{ role_path }}/tasks/manual_pre-create_awx_account.yml"
+  tags: manual-subscription
 
 # Create initial folder and variables for provision stage.
 - import_tasks: "{{ role_path }}/tasks/create_folder_and_variables.yml"
+  tags: always
 
 # Create/recreate a AWX account and setup initial provision script for user.
 - import_tasks: "{{ role_path }}/tasks/create_awx_account.yml"
+  tags: always
 

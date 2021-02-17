@@ -117,9 +117,9 @@
     validate_certs: yes
   when: matrix_domain is defined
 
-- name: Remove 'Configure Ma1sd' job template
+- name: Remove 'Configure ma1sd (Advanced)' job template
   awx.awx.tower_job_template:
-    name: "{{ matrix_domain }} - 1 - Configure Ma1sd"
+    name: "{{ matrix_domain }} - 1 - Configure ma1sd (Advanced)"
     job_type: run
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml
@@ -165,9 +165,9 @@
     validate_certs: yes
   when: matrix_domain is defined
   
-- name: Remove 'Configure Corporal' job template
+- name: Remove 'Configure Corporal (Advanced)' job template
   awx.awx.tower_job_template:
-    name: "{{ matrix_domain }} - 1 - Configure Corporal"
+    name: "{{ matrix_domain }} - 1 - Configure Corporal (Advanced)"
     job_type: run
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     playbook: setup.yml

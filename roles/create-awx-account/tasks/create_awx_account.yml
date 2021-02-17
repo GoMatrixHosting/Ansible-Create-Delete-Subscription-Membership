@@ -144,7 +144,7 @@
     playbook: setup.yml
     credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_on-premise.json') }}"
+    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_on-premises.json') }}"
     state: present
     verbosity: 1
     job_tags: imposter-check, setup-backup
@@ -152,7 +152,7 @@
     tower_host: "https://{{ tower_host }}"
     tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
-  when: subscription_type == 'on_premise'
+  when: subscription_type == 'on_premises'
 
 - name: Allow team to use 'Provision a New Server' job template
   awx.awx.tower_role:
