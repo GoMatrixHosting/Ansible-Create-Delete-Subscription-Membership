@@ -3,7 +3,7 @@
 - name: Set sub type strings
   set_fact:
     digitalocean_string: 'DigitalOcean'
-    on_premise_string: 'On-Premise'
+    on_premises_string: 'On-Premises'
 
 - name: Configure subscription_type 1
   set_fact:
@@ -12,8 +12,8 @@
   
 - name: Configure subscription_type 2
   set_fact:
-    subscription_type: 'on_premise'
-  when: on_premise_string in plan_title
+    subscription_type: 'on_premises'
+  when: on_premises_string in plan_title
 
 - debug:
     msg: "subscription_type: {{ subscription_type }}"
@@ -74,15 +74,6 @@
     owner: root
     group: webhook
     state: touch
-    
-- name: Add entry for user to client-list file
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/client-list'
-    line: '{{ member_id }},{{ client_email }}'
-    mode: '0660'
-    owner: root
-    group: webhook
-    state: present
 
 # Create server_vars.yml file locally on AWX.
 
@@ -160,20 +151,12 @@
     group: webhook
     state: present
 
-#Create extra_vars.yml variables file.
+# Create extra_vars.json variables file.
 
-- name: Add subscription_id line to extra_vars.yml file locally on AWX
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    line: 'subscription_id: {{ subscription_id }}'
+- name: Save new 'extra_vars.json' via template
+  template:
+    src: './roles/create-awx-account/templates/extra_vars.json.j2'
+    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json'
     mode: '0600'
-    state: present
-    create: yes
 
-- name: Add member_id line to extra_vars.yml file locally on AWX
-  lineinfile:
-    dest: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
-    line: 'member_id: {{ member_id }}'
-    mode: '0600'
-    state: present
 

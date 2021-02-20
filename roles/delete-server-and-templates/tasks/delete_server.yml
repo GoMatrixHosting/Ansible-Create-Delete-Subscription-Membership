@@ -3,6 +3,7 @@
 - name: Include hosting vars of digital_ocean.yml
   include_vars:
     file: /var/lib/awx/projects/hosting/hosting_vars.yml
+  no_log: True
 
 - name: Load vars from organisation.yml
   include_vars:
@@ -31,4 +32,9 @@
     msg: "{{ deleted_server_info }}"
   when: do_droplet_id is defined
 
-
+#- name: Delete fake DNS record for faster testing. :)
+#  delegate_to: 127.0.0.1
+#  blockinfile:
+#    path: /etc/hosts
+#    marker: "<!-- {mark} ANSIBLE MANAGED BLOCK {{ matrix_domain }} -->"
+#    block: ""

@@ -1,227 +1,122 @@
 
-# Script inputs:
-# client_first_name, client_last_name, client_email, subscription_id, plan_title 
-
 - name: Include organisation vars of organisation.yml
   include_vars:
     file: '/var/lib/awx/projects/clients/{{ member_id }}/organisation.yml'
 
-- name: Install tower dep
-  pip:
-      name: ansible-tower-cli
+- name: Include vaulted SSH password variable
+  include_vars:
+    file: /var/lib/awx/projects/hosting/vaulted_ssh_password.yml
+  no_log: true
 
-- name: Create AWX organisation
-  tower_organization:
-    name: "{{ member_id }}"
-    description: "{{ client_email }} Organisation"
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
-  register: awxorg
-  
-#- name: Install pwgen on tower with yum
-#  yum:
-#    name: pwgen
-#    state: latest
+- name: Install jq in AWX
+  delegate_to: 127.0.0.1
+  yum:
+    name: jq
+    state: latest
 
-#- name: Generate the users password
-#  command: 'pwgen -s 20 1'
-#  register: register_client_password
-  # ^ output should be hidden
-
-#- name: Add AWX user
-#  tower_user:
-#    username: "{{ client_email }}"
-#    email: "{{ client_email }}"
-#    password: register_client_password.stdout
-#    first_name: "{{ client_first_name }}"
-#    last_name: "{{ client_last_name }}"
-#    tower_host: "{{ tower_host }}"
-#    tower_username: "{{ tower_username }}"
-#    tower_password: "{{ tower_password }}"
-#    validate_certs: yes
-
-#- name: Add AWX user to organisation
-#  tower_role:
-#    user: "{{ client_email }}"
-#    organization: "{{ member_id }}"
-#    role: member
-#    tower_host: "{{ tower_host }}"
-#    tower_username: "{{ tower_username }}"
-#    tower_password: "{{ tower_password }}"
-#    validate_certs: yes
-
-- name: Create a team for the user
-  tower_team:
-    name: "{{ member_id }}"
-    description: "{{ client_email }} Team"
-    organization: "{{ member_id }}"
-    state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
+- name: Collect AWX admin token the hard way!
+  delegate_to: 127.0.0.1
+  shell: |
+      curl -sku {{ tower_username }}:{{ tower_password }} -H "Content-Type: application/json" -X POST -d '{"description":"Tower CLI", "application":null, "scope":"write"}' https://{{ tower_host }}/api/v2/users/1/personal_tokens/ | jq '.token' | sed -r 's/\"//g'
+  register: tower_token
+  no_log: True
 
 - name: Add tower inventory
-  tower_inventory:
+  awx.awx.tower_inventory:
     name: "{{ member_id }}"
     description: "{{ client_email }} inventory"
     organization: "{{ member_id }}"
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 - name: Allow team to administrate/use this inventory
-  tower_role:
+  awx.awx.tower_role:
     team: "{{ member_id }}"
     inventory: "{{ member_id }}"
     role: use
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 - name: Add dummyvalue.com host to organisations inventory
-  tower_host:
+  awx.awx.tower_host:
     name: "dummyvalue.com"
     description: "A placeholder host, because ansible needs a host to work on. :)"
     inventory: "{{ member_id }}"
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 - name: Add 'AWX SSH Key' credential to users organisation
-  tower_credential:
+  awx.awx.tower_credential:
     name: "{{ member_id }} - AWX SSH Key"
     description: "The SSH key for Provision/Deploy"
     organization: "{{ member_id }}"
-    kind: ssh
-    ssh_key_data: "{{ lookup('file', '/var/lib/awx/projects/hosting/private.key') }}"
-    ssh_key_unlock: "{{ private_ssh_key_password }}"
-    state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    credential_type: Machine
+    inputs:
+      ssh_key_data: "{{ lookup('file', '/var/lib/awx/projects/hosting/private.key') }}"
+      ssh_key_unlock: "{{ private_ssh_key_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
-# ^ SSH key loaded into the towers volume manually for now.
-
 - name: Add 'Ansible Provision Server' project to users organisation
-  tower_project:
+  awx.awx.tower_project:
     name: "{{ member_id }} - Ansible Provision Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
     organization: "{{ member_id }}"
     scm_type: git
-    scm_url: "https://gitlab.com/ChatOasis/ansible-provision-server.git"
+    scm_url: "https://gitlab.com/GoMatrixHosting/ansible-provision-server.git"
     scm_delete_on_update: yes
     scm_update_on_launch: yes
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 - name: Allow team to read 'Ansible Provision Server' project
-  tower_role:
+  awx.awx.tower_role:
     team: "{{ member_id }}"
     project: "{{ member_id }} - Ansible Provision Server"
     role: read
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 - name: Add 'Spantaleev's Deploy' project to users organisation
-  tower_project:
+  awx.awx.tower_project:
     name: "{{ member_id }} - Matrix Docker Ansible Deploy"
     description: "Creating and updating a Matrix service on an already provisioned server."
     organization: "{{ member_id }}"
     scm_type: git
-    scm_url: "https://gitlab.com/ChatOasis/chatoasis-matrix-docker-ansible-deploy.git"
+    scm_url: "https://gitlab.com/GoMatrixHosting/gomatrixhosting-matrix-docker-ansible-deploy.git"
     scm_delete_on_update: yes
     scm_update_on_launch: yes
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 - name: Allow team to read 'Spantaleev's Deploy' project
-  tower_role:
+  awx.awx.tower_role:
     team: "{{ member_id }}"
     project: "{{ member_id }} - Matrix Docker Ansible Deploy"
     role: read
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
-
-- name: Add 'AWX Playbooks' project to users organisation
-  tower_project:
-    name: "{{ member_id }} - AWX Playbooks"
-    description: "AWX playbooks for management of an already deployed server."
-    organization: "{{ member_id }}"
-    scm_type: git
-    scm_url: "https://gitlab.com/ChatOasis/chatoasis-awx-playbooks.git"
-    scm_delete_on_update: yes
-    scm_update_on_launch: yes
-    state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
-
-- name: Allow team to read 'AWX Playbooks' project
-  tower_role:
-    team: "{{ member_id }}"
-    project: "{{ member_id }} - AWX Playbooks"
-    role: read
-    state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
-    validate_certs: yes
-
-#- name: Update 'Ansible Provision Server' project
-#  awx.awx.tower_project_update:
-#    project: "{{ member_id }} - Ansible Provision Server"
-#    timeout: 300
-#    tower_host: "{{ tower_host }}"
-#    tower_username: "{{ tower_username }}"
-#    tower_password: "{{ tower_password }}"
-#    validate_certs: yes
-
-#- name: Update 'Spantaleev's Deploy' project
-#  awx.awx.tower_project_update:
-#    project: "{{ member_id }} - Matrix Docker Ansible Deploy"
-#    timeout: 300
-#    tower_host: "{{ tower_host }}"
-#    tower_username: "{{ tower_username }}"
-#    tower_password: "{{ tower_password }}"
-#    validate_certs: yes
-
-#- name: Update 'AWX Playbooks' project
-#  awx.awx.tower_project_update:
-#    project: "{{ member_id }} - AWX Playbooks"
-#    timeout: 300
-#    tower_host: "{{ tower_host }}"
-#    tower_username: "{{ tower_username }}"
-#    tower_password: "{{ tower_password }}"
-#    validate_certs: yes
 
 - name: Create 'Provision a New Server' job template
-  tower_job_template:
-    name: "{{ subscription_id }} - 00 - Provision a New Server"
+  awx.awx.tower_job_template:
+    name: "0 - {{ subscription_id }} - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
     inventory: "{{ member_id }}"
     project: "{{ member_id }} - Ansible Provision Server"
@@ -233,43 +128,40 @@
     verbosity: 1
     job_tags: imposter-check, setup-backup
     skip_tags: digitalocean-space
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
   when: subscription_type == 'digitalocean'
 
 - name: Create 'Provision a New Server' job template
-  tower_job_template:
-    name: "{{ subscription_id }} - 00 - Provision a New Server"
+  awx.awx.tower_job_template:
+    name: "0 - {{ subscription_id }} - Provision a New Server"
     description: "Creates digitalocean droplet and space, performs initial setup, adds relevant playbooks to users account."
-    extra_vars_path: '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.yml'
+    extra_vars: "{{ lookup('file', '/var/lib/awx/projects/clients/{{ member_id }}/{{ subscription_id }}/extra_vars.json') }}"
     job_type: run
     inventory: "{{ member_id }}"
     project: "{{ member_id }} - Ansible Provision Server"
     playbook: setup.yml
     credential: "{{ member_id }} - AWX SSH Key"
     survey_enabled: true
-    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_on-premise.json') }}"
+    survey_spec: "{{ lookup('file', './roles/create-awx-account/surveys/provision_survey_on-premises.json') }}"
     state: present
     verbosity: 1
     job_tags: imposter-check, setup-backup
     skip_tags: digitalocean-space, digitalocean-droplet
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
-  when: subscription_type == 'on_premise'
+  when: subscription_type == 'on_premises'
 
 - name: Allow team to use 'Provision a New Server' job template
-  tower_role:
+  awx.awx.tower_role:
     team: "{{ member_id }}"
-    job_template: "{{ subscription_id }} - 00 - Provision a New Server"
+    job_template: "0 - {{ subscription_id }} - Provision a New Server"
     role: execute
     state: present
-    tower_host: "{{ tower_host }}"
-    tower_username: "{{ tower_username }}"
-    tower_password: "{{ tower_password }}"
+    tower_host: "https://{{ tower_host }}"
+    tower_oauthtoken: "{{ tower_token.stdout }}"
     validate_certs: yes
 
 

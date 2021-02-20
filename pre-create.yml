@@ -1,0 +1,20 @@
+
+- name: "Performs initial organisation/team creation before subscription is confirmed."
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Create AWX organisation
+      tower_organization:
+        name: "{{ member_id }}"
+        description: "{{ client_email }} Organisation"
+        state: present
+    
+    - name: Create a Team for the user
+      tower_team:
+        name: "{{ member_id }}"
+        description: "{{ client_email }} Team"
+        organization: "{{ member_id }}"
+        state: present
+
