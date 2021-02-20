@@ -1,6 +1,6 @@
-# Ansible Create Subscription
+# Ansible Create Delete Subscription Membership
 
-Has 2 modes, where either the script is run after a memberpress subscription is created, a 'plan_title' is specified, this causes a digitalocean droplet and space to be created. Or a 'byo account' is created and the user connects their own server at provision stage.
+Has 4 modes, where either the script is run after a memberpress subscription is created, prompted by a webhook. Or a subscription is created manually by completing a survey inside AWX. Created subscriptions can either be a 'DigitalOcean Plan' where the user is assigned a droplet, or a 'On-Premises Plan' where the user is prompted to connect their own hardware suring the provision stage.
 
 # Prerequisites
 
@@ -15,58 +15,72 @@ tower_username: value
 tower_password: value
 ```
 
-# MemberPress Mode
+# Ansible Create MP (MemberPress) Subscription (create.yml)
 
 INPUT (extra_variables):
 - client_first_name
 - client_last_name
-- client_email
-- member_id - login username, a memberpress member number (eg: '25')
-- subscription_id - memberpress subscription number (eg: 'mp-sub-5fa2a2ac5fa12')
-- plan_title - size of server is using memberpress ('Micro Server', 'Small Server', 'Medium Server', 'Large Server', 'Jumbo Server'), if making a BYO server this can be left blank and defined later at provision stage.
+- client_email - used as the AWX login for that client.
+- member_id - a memberpress member number (eg: '25')
+- subscription_id - memberpress subscription number (eg: 'I-VCRY4H9EKT9A')
+- plan_title - name of the plan, possible values are:
+	- 'Small DigitalOcean Server'
+	- 'Medium DigitalOcean Server'
+	- 'Large DigitalOcean Server'
+	- 'Small On-Premises Server'
+	- 'Medium On-Premises Server'
+	- 'Large On-Premises Server'
 
-PROCESSING: Creates AWX Account for user, creates initial organisation.yml and server_vars.yml file. Creates a DigitalOcean droplet and space. Also creates initial '{{ subscription_id }} Provision Server' playbook in users account.
+PROCESSING: Creates AWX Account for user, creates initial organisation.yml and server_vars.yml file. Also creates initial '{{ subscription_id }} Provision Server' playbook in users account, which will allow the client to select their base url, element client url, the DigitalOcean droplet location or to connect their own On-Premises server.
 
 OUTPUT: Working AWX account at provision stage.
 
-# On-Premises Mode
+# pre-create.yml
+
+Creates the AWX 'organisation' and 'team' upon MP subscription creation, so they exist before the client logs in to AWX. Makes the initial login process more seamless.
+
+# bind-user-account.yml
+
+After creating a MP subscription and first logging in, this connects a clients AWX account to the appropriate 'team'. Makes the initial login process more seamless. 
+
+# Ansible Create Manual Subscription (create.yml)
 
 INPUT (extra_variables):
 - client_first_name
 - client_last_name
-- client_email
-- member_id - login username, a string (eg: 'billybob')
-- subscription_id - 'byo'
+- client_email - used as the AWX login for that client. 
+- client_password
+- member_id - a unique value that represents this client.
+- plan_title - name of the plan, possible values are:
+	- 'Small DigitalOcean Server'
+	- 'Medium DigitalOcean Server'
+	- 'Large DigitalOcean Server'
+	- 'Small On-Premises Server'
+	- 'Medium On-Premises Server'
+	- 'Large On-Premises Server'
 
-PROCESSING: Creates AWX Account for user, append random string to 'byo', creates initial organisation.yml and server_vars.yml file. Also creates a '{{ subscription_id }} Provision Server' playbook in users account, where they will instead be prompted to connect their own server.
+PROCESSING: Creates AWX Account for user, generates them a subscription_id, creates initial organisation.yml and server_vars.yml file. Also creates a '{{ subscription_id }} Provision Server' playbook in users account, which will allow the client to select their base url, element client url, the DigitalOcean droplet location or to connect their own On-Premises server.
 
 OUTPUT: Working AWX account at provision stage.
 
-# Ansible Delete Subscription
-
-Deletes a subscription and/or a membership.
-
-# Delete Subscription
+# Ansible Delete Subscription (delete.yml)
 
 TAGS:
 delete-subscription
 
 INPUT (extra_variables): 
-- subscription_id - The subscription id. (eg: 'mp-sub-5fa2a2ac5fa12')
-- member_id - The login username for the AWX account.
+- subscription_id
+- member_id
 
-PROCESSING: Removes job templates, digitalocean resources, and files/folders associated with a subscription. Later: Add queue to delay deletion of digitalocean resources for 2-7 days.
+PROCESSING: Removes job templates, digitalocean resources, and files/folders associated with a subscription.
 
-OUTPUT:
-
-# Delete Membership
+# Ansible Delete Membership (delete.yml)
 
 TAGS:
 delete-membership
 
 INPUT (extra_variables): 
-- member_id - The login username for the AWX account.
+- member_id
 
 PROCESSING: Playbook to remove clients AWX Organisation and local files on the AWX server.
 
-OUTPUT:
