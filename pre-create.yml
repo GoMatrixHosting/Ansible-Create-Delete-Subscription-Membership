@@ -5,7 +5,7 @@
   gather_facts: false
 
   tasks:
-    - name: Include hosting vars of digital_ocean.yml
+    - name: Include hosting vars
       include_vars:
         file: /var/lib/awx/projects/hosting/hosting_vars.yml
       no_log: True
